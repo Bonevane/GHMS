@@ -65,6 +65,7 @@ export function PatientForm({ patient, onSubmit, onCancel }: PatientFormProps) {
     }
   
     console.log("Patient and details inserted successfully!");
+    formData.mr=patientId;
     // Optional: Reset form or call parent onSubmit
     onSubmit(formData);
   };
