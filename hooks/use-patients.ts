@@ -87,7 +87,7 @@ export function usePatients() {
           age: updatedPatient.age,
           bloodgroup: updatedPatient.bloodgroup,
         })
-        .eq("patient_id", mr); // Foreign key linking to patients
+        .eq("mr", mr); // Foreign key linking to patients
   
       if (detailsError) {
         console.error("Error updating patient details:", detailsError.message);
