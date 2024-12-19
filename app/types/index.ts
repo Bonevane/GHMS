@@ -13,18 +13,18 @@ export interface User {
 }
 
 export interface Patient {
-  id: string;
+  mr: number;
   name: string;
   age: number;
-  gender: 'male' | 'female' | 'other';
-  contact: string;
-  bloodGroup: string;
-  weight?: number;
-  height?: number;
-  address?: string;
-  district?: string;
-  medicalHistory: string[];
-  appointments: Appointment[];
+  sex: 'Male' | 'Female';
+  phone: string;
+  bloodgroup: string;
+  // weight?: number;
+  // height?: number;
+  // address?: string;
+  // district?: string;
+  // medicalHistory: string[];
+  // appointments: Appointment[];
 }
 
 export interface Appointment {

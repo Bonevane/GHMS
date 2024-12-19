@@ -27,14 +27,14 @@ export default function PatientsPage() {
 
   const handleEditPatient = (patientData: Partial<Patient>) => {
     if (selectedPatient) {
-      updatePatient(selectedPatient.id, patientData as Patient);
+      updatePatient(selectedPatient.mr, patientData as Patient);
       setSelectedPatient(null);
       setIsDialogOpen(false);
     }
   };
 
-  const handleDeletePatient = (patientId: string) => {
-    deletePatient(patientId);
+  const handleDeletePatient = (mr: number) => {
+    deletePatient(mr);
   };
 
   return (

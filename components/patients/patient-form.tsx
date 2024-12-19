@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Patient } from '@/app/types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import supabase from '../config/supabaseClient';
 
 interface PatientFormProps {
   patient?: Patient;
@@ -18,18 +19,56 @@ export function PatientForm({ patient, onSubmit, onCancel }: PatientFormProps) {
   const [formData, setFormData] = useState<Partial<Patient>>(patient || {
     name: '',
     age: 0,
-    gender: 'male',
-    contact: '',
-    bloodGroup: '',
-    medicalHistory: [],
-    appointments: []
+    sex: 'Male',
+    phone: '',
+    bloodgroup: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+  
+    // Step 1: Insert into patients table
+    const { data: patientData, error: patientError } = await supabase
+      .from("patient")
+      .insert([
+        {
+          name: formData.name,
+          sex: formData.sex,
+          phone: formData.phone,
+        },
+      ])
+      .select(); // Use select() to get the inserted patient's ID.
+  
+    if (patientError) {
+      console.error("Error inserting into patients table:", patientError.message);
+      return;
+    }
+  
+    // Retrieve the auto-incremented ID
+    const patientId = patientData[0].mr; // Assumes only one record is inserted.
+  
+    // Step 2: Insert into patientdetails table
+    const { error: detailsError } = await supabase
+      .from("patientdetail")
+      .insert([
+        {
+          mr: patientId, // Use the foreign key
+          age: formData.age,
+          bloodgroup: formData.bloodgroup,
+        },
+      ]);
+  
+    if (detailsError) {
+      console.error("Error inserting into patientdetails table:", detailsError.message);
+      return;
+    }
+  
+    console.log("Patient and details inserted successfully!");
+  
+    // Optional: Reset form or call parent onSubmit
     onSubmit(formData);
   };
-
+  
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
@@ -54,16 +93,15 @@ export function PatientForm({ patient, onSubmit, onCancel }: PatientFormProps) {
       <div className="space-y-2">
         <Label htmlFor="gender">Gender</Label>
         <Select
-          value={formData.gender}
-          onValueChange={(value) => setFormData({ ...formData, gender: value as 'male' | 'female' | 'other' })}
+          value={formData.sex}
+          onValueChange={(value) => setFormData({ ...formData, sex: value as 'Male' | 'Female'  })}
         >
           <SelectTrigger>
             <SelectValue placeholder="Select gender" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="male">Male</SelectItem>
-            <SelectItem value="female">Female</SelectItem>
-            <SelectItem value="other">Other</SelectItem>
+            <SelectItem value="Male">Male</SelectItem>
+            <SelectItem value="Female">Female</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -71,8 +109,8 @@ export function PatientForm({ patient, onSubmit, onCancel }: PatientFormProps) {
         <Label htmlFor="contact">Contact</Label>
         <Input
           id="contact"
-          value={formData.contact}
-          onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+          value={formData.phone}
+          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
           required
         />
       </div>
@@ -80,8 +118,8 @@ export function PatientForm({ patient, onSubmit, onCancel }: PatientFormProps) {
         <Label htmlFor="bloodGroup">Blood Group</Label>
         <Input
           id="bloodGroup"
-          value={formData.bloodGroup}
-          onChange={(e) => setFormData({ ...formData, bloodGroup: e.target.value })}
+          value={formData.bloodgroup}
+          onChange={(e) => setFormData({ ...formData, bloodgroup: e.target.value })}
           required
         />
       </div>

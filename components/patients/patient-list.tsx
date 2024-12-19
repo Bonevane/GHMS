@@ -28,7 +28,7 @@ interface PatientListProps {
   patients: Patient[];
   isLoading: boolean;
   onEdit: (patient: Patient) => void;
-  onDelete: (id: string) => void;
+  onDelete: (mr: number) => void;
 }
 
 export function PatientList({ patients, isLoading, onEdit, onDelete }: PatientListProps) {
@@ -51,12 +51,12 @@ export function PatientList({ patients, isLoading, onEdit, onDelete }: PatientLi
         </TableHeader>
         <TableBody>
           {patients.map((patient) => (
-            <TableRow key={patient.id}>
+            <TableRow key={patient.mr}>
               <TableCell className="font-medium">{patient.name}</TableCell>
               <TableCell>{patient.age}</TableCell>
-              <TableCell>{patient.gender}</TableCell>
-              <TableCell>{patient.bloodGroup}</TableCell>
-              <TableCell>{patient.contact}</TableCell>
+              <TableCell>{patient.sex}</TableCell>
+              <TableCell>{patient.bloodgroup}</TableCell>
+              <TableCell>{patient.phone}</TableCell>
               <TableCell className="text-right space-x-2">
                 <Button variant="ghost" size="icon" onClick={() => onEdit(patient)}>
                   <FileEdit className="h-4 w-4" />
@@ -76,7 +76,7 @@ export function PatientList({ patients, isLoading, onEdit, onDelete }: PatientLi
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={() => onDelete(patient.id)}>
+                      <AlertDialogAction onClick={() => onDelete(patient.mr)}>
                         Delete
                       </AlertDialogAction>
                     </AlertDialogFooter>
