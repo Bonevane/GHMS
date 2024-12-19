@@ -17,6 +17,7 @@ interface PatientFormProps {
 
 export function PatientForm({ patient, onSubmit, onCancel }: PatientFormProps) {
   const [formData, setFormData] = useState<Partial<Patient>>(patient || {
+    mr : 0,
     name: '',
     age: 0,
     sex: 'Male',
@@ -64,7 +65,6 @@ export function PatientForm({ patient, onSubmit, onCancel }: PatientFormProps) {
     }
   
     console.log("Patient and details inserted successfully!");
-  
     // Optional: Reset form or call parent onSubmit
     onSubmit(formData);
   };

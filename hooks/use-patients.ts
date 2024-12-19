@@ -57,8 +57,7 @@ export function usePatients() {
 
   const addPatient = (patient: Patient) => {
     const newPatient = {
-      ...patient,
-      mr: Math.random(),
+      ...patient
     };
     setPatients(prev => [...prev, newPatient]);
   };
