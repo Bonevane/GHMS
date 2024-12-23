@@ -56,6 +56,7 @@ export function usePatients() {
   }, []);
 
   const addPatient = (patient: Patient) => {
+    
     const newPatient = {
       ...patient
     };

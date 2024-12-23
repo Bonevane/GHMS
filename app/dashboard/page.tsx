@@ -1,4 +1,5 @@
 "use client"
+import { useRouter } from "next/navigation";
 
 import { useAuth } from '@/contexts/auth-context';
 import { 
@@ -9,15 +10,19 @@ import {
 
 export default function DashboardPage() {
   const { user } = useAuth();
+  const router=useRouter();
+  if (!user) 
+    {console.log("ANUS");
+    router.push("/auth/login"); // Redirect to the login page after logout
 
-  if (!user) return null;
+    return null;}
 
   switch (user.role) {
-    case 'admin':
+    case 'Administrator':
       return <AdminDashboard />;
-    case 'doctor':
+    case 'Doctor':
       return <DoctorDashboard />;
-    case 'receptionist':
+    case 'Receptionist':
       return <ReceptionistDashboard />;
     default:
       return null;

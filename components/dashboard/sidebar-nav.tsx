@@ -7,7 +7,6 @@ import {
   Users,
   FileText,
   BarChart2,
-  Settings,
   LogOut,
   Hospital,
   BedDouble,
@@ -21,7 +20,6 @@ const adminNavigation = [
   { name: 'Staff', href: '/dashboard/staff', icon: Users },
   { name: 'Records', href: '/dashboard/records', icon: FileText },
   { name: 'Reports', href: '/dashboard/reports', icon: BarChart2 },
-  { name: 'Settings', href: '/dashboard/settings', icon: Settings },
 ];
 
 const doctorNavigation = [
@@ -43,9 +41,9 @@ const receptionistNavigation = [
 export function SidebarNav() {
   const { user, logout } = useAuth();
 
-  const navigation = user?.role === 'admin'
+  const navigation = user?.role === 'Administrator'
     ? adminNavigation
-    : user?.role === 'doctor'
+    : user?.role === 'Doctor'
     ? doctorNavigation
     : receptionistNavigation;
 

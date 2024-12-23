@@ -1,4 +1,4 @@
-export type Role = 'admin' | 'doctor' | 'receptionist' | 'nurse' | 'lab_technician';
+export type Role = "Doctor" | "Nurse" | "Receptionist" | "Administrator";
 
 export interface User {
   id: string;
@@ -11,7 +11,12 @@ export interface User {
   qualification?: string;
   dateOfJoining?: Date;
 }
-
+export interface LoginUser {
+  email: string;
+  password: string;
+  role: Role;
+  name: string;
+}
 export interface Patient {
   mr: number;
   name: string;

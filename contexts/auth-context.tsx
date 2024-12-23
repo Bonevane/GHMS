@@ -1,39 +1,47 @@
-"use client"
+"use client";
 
-import { createContext, useContext, useState, useEffect } from 'react';
-import { User } from '@/app/types';
-import { useRouter } from 'next/navigation';
+import { createContext, useContext, useState } from "react";
+import { LoginUser } from "@/app/types";
+import { useRouter } from "next/navigation";
+import supabase from "@/config/supabaseClient";
+import { ReactNode } from "react";
 
 interface AuthContextType {
-  user: User | null;
-  login: (user: User) => void;
+  user: LoginUser | null;
+  login: (email: string, password: string, role: string) => Promise<boolean>;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const router = useRouter();
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState<LoginUser | null>(null);
+  const router = useRouter(); // Use router for navigation
 
-  useEffect(() => {
-    // Check for stored user data on mount
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+  const login = async (email: string, password: string, role: string): Promise<boolean> => {
+    try {
+      const { data, error } = await supabase
+        .from("employee")
+        .select("name, email, password, role")
+        .match({ email, password, role });
+
+      if (error || !data || data.length === 0) {
+        console.error("Login failed", error);
+        return false;
+      }
+
+      setUser(data[0]); // Set the authenticated user
+      router.push("/dashboard"); // Navigate to the dashboard after successful login
+      return true;
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      return false;
     }
-  }, []);
-
-  const login = (userData: User) => {
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
-    router.push('/dashboard');
   };
 
   const logout = () => {
-    setUser(null);
-    localStorage.removeItem('user');
-    router.push('/');
+    setUser(null); // Clear the user state
+    router.push("/auth/login"); // Redirect to the login page after logout
   };
 
   return (
@@ -41,12 +49,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       {children}
     </AuthContext.Provider>
   );
-}
+};
 
 export function useAuth() {
+  const router = useRouter(); // Use router for navigation
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }

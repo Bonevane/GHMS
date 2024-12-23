@@ -28,47 +28,78 @@ export function PatientForm({ patient, onSubmit, onCancel }: PatientFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
   
-    // Step 1: Insert into patients table
-    const { data: patientData, error: patientError } = await supabase
-      .from("patient")
-      .insert([
-        {
+    if (patient) {
+      // Update existing patient
+      const { error: patientUpdateError } = await supabase
+        .from("patient")
+        .update({
           name: formData.name,
           sex: formData.sex,
           phone: formData.phone,
-        },
-      ])
-      .select(); // Use select() to get the inserted patient's ID.
+        })
+        .eq("mr", patient.mr); // Match the patient's unique identifier
   
-    if (patientError) {
-      console.error("Error inserting into patients table:", patientError.message);
-      return;
-    }
+      if (patientUpdateError) {
+        console.error("Error updating patient:", patientUpdateError.message);
+        return;
+      }
   
-    // Retrieve the auto-incremented ID
-    const patientId = patientData[0].mr; // Assumes only one record is inserted.
-  
-    // Step 2: Insert into patientdetails table
-    const { error: detailsError } = await supabase
-      .from("patientdetail")
-      .insert([
-        {
-          mr: patientId, // Use the foreign key
+      const { error: detailsUpdateError } = await supabase
+        .from("patientdetail")
+        .update({
           age: formData.age,
           bloodgroup: formData.bloodgroup,
-        },
-      ]);
+        })
+        .eq("mr", patient.mr); // Match the patient's unique identifier
   
-    if (detailsError) {
-      console.error("Error inserting into patientdetails table:", detailsError.message);
-      return;
+      if (detailsUpdateError) {
+        console.error("Error updating patient details:", detailsUpdateError.message);
+        return;
+      }
+  
+      console.log("Patient and details updated successfully!");
+    } else {
+      // Insert new patient
+      const { data: patientData, error: patientError } = await supabase
+        .from("patient")
+        .insert([
+          {
+            name: formData.name,
+            sex: formData.sex,
+            phone: formData.phone,
+          },
+        ])
+        .select();
+  
+      if (patientError) {
+        console.error("Error inserting into patients table:", patientError.message);
+        return;
+      }
+  
+      const patientId = patientData[0].mr;
+  
+      const { error: detailsError } = await supabase
+        .from("patientdetail")
+        .insert([
+          {
+            mr: patientId,
+            age: formData.age,
+            bloodgroup: formData.bloodgroup,
+          },
+        ]);
+  
+      if (detailsError) {
+        console.error("Error inserting into patientdetails table:", detailsError.message);
+        return;
+      }
+  
+      console.log("Patient and details inserted successfully!");
+      formData.mr = patientId; // Update the form data with the new patient's ID
     }
   
-    console.log("Patient and details inserted successfully!");
-    formData.mr=patientId;
-    // Optional: Reset form or call parent onSubmit
-    onSubmit(formData);
+    onSubmit(formData); // Pass updated form data back to the parent component
   };
+  
   
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
