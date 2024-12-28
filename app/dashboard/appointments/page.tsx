@@ -10,6 +10,9 @@ import { AppointmentList } from '@/components/appointments/appointment-list';
 import { UpcomingAppointments } from '@/components/appointments/upcoming-appointments';
 import { Appointment } from '@/app/types';
 import { format } from 'date-fns';
+import { useRouter } from "next/navigation";
+import { useAuth } from '@/contexts/auth-context';
+
 
 // Mock appointments data
 const MOCK_APPOINTMENTS: Appointment[] = [

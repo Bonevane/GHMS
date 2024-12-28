@@ -1,64 +1,46 @@
 "use client"
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { AdverseAnesthesiaForm } from './forms/adverse-anesthesia-form';
+import { BloodTransfusionForm } from './forms/blood-transfusion-form';
+import { SurgicalSiteForm } from './forms/surgical-site-form';
+import { VerbalOrderForm } from './forms/verbal-order-form';
+import { OTRecallForm } from './forms/ot-recall-form';
+import { RedoForm } from './forms/redo-form';
+import { SterilizationForm } from './forms/sterilization-form';
 
 interface RecordFormProps {
-  type: string;
+  type: 'adverse-anesthesia' | 'blood-transfusion' | 'surgical-site' | 'verbal-order' | 'ot-recall' 
+  | 'redo' | 'sterilization';
   onSubmit: (data: any) => void;
   onCancel: () => void;
-  initialData?: any;
 }
 
-export function RecordForm({ type, onSubmit, onCancel, initialData }: RecordFormProps) {
-  const [formData, setFormData] = useState(initialData || {});
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit(formData);
+export function RecordForm({ type, onSubmit, onCancel }: RecordFormProps) {
+  const getFormComponent = () => {
+    switch (type) {
+      case 'adverse-anesthesia':
+        return <AdverseAnesthesiaForm onSubmit={onSubmit} onCancel={onCancel} />;
+      case 'blood-transfusion':
+        return <BloodTransfusionForm onSubmit={onSubmit} onCancel={onCancel} />;
+      case 'surgical-site':
+        return <SurgicalSiteForm onSubmit={onSubmit} onCancel={onCancel} />;
+      case 'verbal-order':
+        return <VerbalOrderForm onSubmit={onSubmit} onCancel={onCancel} />;
+      case 'ot-recall':
+        return <OTRecallForm onSubmit={onSubmit} onCancel={onCancel} />;
+      case 'redo':
+        return <RedoForm onSubmit={onSubmit} onCancel={onCancel} />;
+      case 'sterilization':
+        return <SterilizationForm onSubmit={onSubmit} onCancel={onCancel} />;
+      default:
+        return <div>Form not found for type: {type}</div>;
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="patientId">Patient ID</Label>
-        <Input
-          id="patientId"
-          value={formData.patientId || ''}
-          onChange={(e) => setFormData({ ...formData, patientId: e.target.value })}
-          required
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="date">Date</Label>
-        <Input
-          id="date"
-          type="date"
-          value={formData.date || ''}
-          onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-          required
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="details">Details</Label>
-        <Textarea
-          id="details"
-          value={formData.details || ''}
-          onChange={(e) => setFormData({ ...formData, details: e.target.value })}
-          required
-        />
-      </div>
-      <div className="flex justify-end space-x-2">
-        <Button type="button" variant="outline" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button type="submit">
-          {initialData ? 'Update' : 'Add'} Record
-        </Button>
-      </div>
-    </form>
+    <ScrollArea className="h-[500px] pr-4">
+      {getFormComponent()}
+    </ScrollArea>
   );
 }

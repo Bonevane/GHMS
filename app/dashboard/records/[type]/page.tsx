@@ -5,8 +5,9 @@ import { useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-// import { RecordForm } from '@/components/records/record-form';
-// import { RecordList } from '@/components/records/record-list';
+import { RecordForm } from '@/components/records/record-form';
+import { RecordList } from '@/components/records/record-list';
+import { recordTypes } from '@/lib/utils/record-types';
 
 export default function RecordTypePage() {
   const params = useParams();
@@ -36,7 +37,7 @@ export default function RecordTypePage() {
   };
 
   const getRecordTypeTitle = (type: string) => {
-    return type.split('-').map(word => 
+    return recordTypes[type]?.title || type.split('-').map(word => 
       word.charAt(0).toUpperCase() + word.slice(1)
     ).join(' ');
   };

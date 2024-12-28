@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from 'react';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -28,6 +29,7 @@ export function AppointmentForm({ appointment, onSubmit, onCancel }: Appointment
   };
 
   return (
+    <ScrollArea className="h-[500px] pr-4">
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="patientId">Patient</Label>
@@ -91,5 +93,6 @@ export function AppointmentForm({ appointment, onSubmit, onCancel }: Appointment
         </Button>
       </div>
     </form>
+    </ScrollArea>
   );
 }

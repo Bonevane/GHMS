@@ -11,7 +11,7 @@ export const recordTypes = {
     fields: ['patientId', 'date', 'anesthesiaType', 'reaction', 'intervention'],
     title: 'Adverse Anesthesia Event',
   },
-  'surgical-site-infection': {
+  'surgical-site': {
     fields: ['patientId', 'date', 'site', 'organism', 'treatment'],
     title: 'Surgical Site Infection',
   },

@@ -43,21 +43,23 @@ export interface Appointment {
 }
 
 export interface Surgery {
-  id: string;
-  patientId: string;
-  surgeonId: string;
-  consultantId?: string;
-  anesthetistId?: string;
-  type: string;
+  surgeryid: string;
+  reg: number;
+  doa: Date;
+  doo: Date;
+  dod: Date;
   diagnosis: string;
   procedure: string;
-  dateOfAdmission: Date;
-  dateOfOperation: Date;
-  dateOfDischarge?: Date;
-  medicines?: string[];
-  anesthesiaType?: string;
-  status: 'pending' | 'approved' | 'completed';
+  surgeon: number;
+  consultant?: string;
+  anesthetist?: string;
+  medicines?: string;
+  ac?:string;
   bill?: number;
+  anesthesia?: string;
+  file: number;
+  due: number;
+  status: 'pending' | 'approved' | 'completed';
   notes?: string;
 }
 

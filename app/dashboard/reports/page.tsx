@@ -2,18 +2,36 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { ReportList } from '@/components/reports/report-list';
-import { ReportForm } from '@/components/reports/report-form';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Plus } from 'lucide-react';
-import { reportTypes } from '@/lib/utils/report-types';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { format } from 'date-fns';
+import { LabReport, RadiologyReport } from '@/app/types/reports';
+import { ReportForm } from '@/components/reports/report-form';
 
-type ReportType = keyof typeof reportTypes;
+type ReportType = 'lab' | 'radiology';
+
+interface Report extends Partial<LabReport>, Partial<RadiologyReport> {
+  id: string;
+  type: ReportType;
+}
 
 export default function ReportsPage() {
-  const [selectedType, setSelectedType] = useState<ReportType>('radiology');
-  const [reports, setReports] = useState<any[]>([]);
+  const [selectedType, setSelectedType] = useState<ReportType>('lab');
+  const [reports, setReports] = useState<Report[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const reportTypes = [
+    { id: 'lab', label: 'Laboratory Reports' },
+    { id: 'radiology', label: 'Radiology Reports' },
+  ];
 
   const handleAddReport = (data: any) => {
     const newReport = {
@@ -36,6 +54,17 @@ export default function ReportsPage() {
     setReports(prev => prev.filter(report => report.id !== id));
   };
 
+  const getColumns = () => {
+    switch (selectedType) {
+      case 'lab':
+        return ['MR#', 'Date', 'Referred By', 'Test Name', 'Lab Name', 'Critical Result', 'Inform To'];
+      case 'radiology':
+        return ['Date', 'MR', 'Referred By', 'Radiology Test Name', 'Lab Name', 'Time In', 'Time Out'];
+      default:
+        return [];
+    }
+  };
+
   const filteredReports = reports.filter(report => report.type === selectedType);
 
   return (
@@ -48,20 +77,20 @@ export default function ReportsPage() {
       </div>
 
       <div className="flex gap-2">
-        {Object.entries(reportTypes).map(([type, { title }]) => (
+        {reportTypes.map((type) => (
           <Button
-            key={type}
-            variant={selectedType === type ? "default" : "outline"}
-            onClick={() => setSelectedType(type as ReportType)}
+            key={type.id}
+            variant={selectedType === type.id as ReportType ? "default" : "outline"}
+            onClick={() => setSelectedType(type.id as ReportType)}
           >
-            {title}
+            {type.label}
           </Button>
         ))}
       </div>
 
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-semibold">
-          {reportTypes[selectedType].title}
+          {reportTypes.find(t => t.id === selectedType)?.label}
         </h3>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
@@ -72,7 +101,7 @@ export default function ReportsPage() {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add New {reportTypes[selectedType].title}</DialogTitle>
+              <DialogTitle>Add New {reportTypes.find(t => t.id === selectedType)?.label}</DialogTitle>
             </DialogHeader>
             <ReportForm
               type={selectedType}
@@ -83,11 +112,61 @@ export default function ReportsPage() {
         </Dialog>
       </div>
 
-      <ReportList
-        reports={filteredReports}
-        onUpdate={handleUpdateReport}
-        onDelete={handleDeleteReport}
-      />
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              {getColumns().map((column) => (
+                <TableHead key={column}>{column}</TableHead>
+              ))}
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredReports.map((report) => (
+              <TableRow key={report.id}>
+                {selectedType === 'lab' ? (
+                  <>
+                    <TableCell>{report.mr}</TableCell>
+                    <TableCell>{format(new Date(report.date!), 'PPP')}</TableCell>
+                    <TableCell>{report.referredBy}</TableCell>
+                    <TableCell>{report.testName}</TableCell>
+                    <TableCell>{report.labName}</TableCell>
+                    <TableCell>{report.criticalResult ? 'Yes' : 'No'}</TableCell>
+                    <TableCell>{report.informTo}</TableCell>
+                  </>
+                ) : (
+                  <>
+                    <TableCell>{format(new Date(report.date!), 'PPP')}</TableCell>
+                    <TableCell>{report.mr}</TableCell>
+                    <TableCell>{report.referredBy}</TableCell>
+                    <TableCell>{report.radiologyTestName}</TableCell>
+                    <TableCell>{report.labName}</TableCell>
+                    <TableCell>{format(new Date(report.timeIn!), 'HH:mm')}</TableCell>
+                    <TableCell>{format(new Date(report.timeOut!), 'HH:mm')}</TableCell>
+                  </>
+                )}
+                <TableCell className="text-right">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleDeleteReport(report.id)}
+                  >
+                    Delete
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+            {filteredReports.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={getColumns().length + 1} className="text-center">
+                  No reports found
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }
