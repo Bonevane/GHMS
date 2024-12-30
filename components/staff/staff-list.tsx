@@ -25,11 +25,10 @@ import {
 
 interface StaffListProps {
   staff: User[];
-  onUpdate: (id: string, data: Partial<User>) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: number) => void;
 }
 
-export function StaffList({ staff, onUpdate, onDelete }: StaffListProps) {
+export function StaffList({ staff, onDelete }: StaffListProps) {
   return (
     <div className="rounded-md border">
       <Table>
@@ -37,7 +36,6 @@ export function StaffList({ staff, onUpdate, onDelete }: StaffListProps) {
           <TableRow>
             <TableHead>Name</TableHead>
             <TableHead>Role</TableHead>
-            <TableHead>Department</TableHead>
             <TableHead>Contact</TableHead>
             <TableHead>Qualification</TableHead>
             <TableHead className="text-right">Actions</TableHead>
@@ -48,17 +46,9 @@ export function StaffList({ staff, onUpdate, onDelete }: StaffListProps) {
             <TableRow key={member.id}>
               <TableCell className="font-medium">{member.name}</TableCell>
               <TableCell className="capitalize">{member.role}</TableCell>
-              <TableCell>{member.department}</TableCell>
               <TableCell>{member.phone}</TableCell>
               <TableCell>{member.qualification}</TableCell>
               <TableCell className="text-right space-x-2">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => onUpdate(member.id, member)}
-                >
-                  <FileEdit className="h-4 w-4" />
-                </Button>
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="ghost" size="icon">

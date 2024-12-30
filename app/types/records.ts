@@ -1,6 +1,6 @@
 // Record Types
 export interface AdverseAnesthesiaEvent {
-  id: string;
+  id: number;
   date: Date;
   mr: string;
   typeOfAnesthesia: string;
@@ -10,7 +10,7 @@ export interface AdverseAnesthesiaEvent {
 }
 
 export interface SterilizationRegister {
-  id: string;
+  id: number;
   batch: string;
   date: Date;
   expiryDate: Date;
@@ -23,8 +23,7 @@ export interface SterilizationRegister {
 }
 
 export interface SentinelEvent {
-  id: string;
-  event: string;
+  id: number;
   date: Date;
   eventSummary: string;
   personFactor: string;
@@ -34,8 +33,7 @@ export interface SentinelEvent {
 }
 
 export interface BloodTransfusionReaction {
-  id: string;
-  sr: string;
+  id: number;
   date: Date;
   mr: string;
   diagnosis: string;
@@ -48,7 +46,7 @@ export interface BloodTransfusionReaction {
 }
 
 export interface SurgicalSiteInfection {
-  id: string;
+  id: number;
   date: Date;
   mr: string;
   doctorName: string;
@@ -58,7 +56,7 @@ export interface SurgicalSiteInfection {
 }
 
 export interface VerbalOrder {
-  id: string;
+  id: number;
   date: Date;
   mr: string;
   doctorName: string;
@@ -67,8 +65,7 @@ export interface VerbalOrder {
 }
 
 export interface OTRecall {
-  id: string;
-  sr: string;
+  id: number;
   date: Date;
   batch: string;
   items: string;
@@ -80,7 +77,7 @@ export interface OTRecall {
 }
 
 export interface RedoRegister {
-  id: string;
+  id: number;
   date: Date;
   mr: string;
   errorsInResult: string;

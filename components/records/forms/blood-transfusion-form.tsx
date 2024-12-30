@@ -1,10 +1,11 @@
 "use client"
 
+// filepath: /d:/DBS_project/GHMS/components/records/forms/blood-transfusion-form.tsx
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { BloodTransfusionReaction } from '@/app/types/records';
 
 interface BloodTransfusionFormProps {
@@ -15,7 +16,6 @@ interface BloodTransfusionFormProps {
 
 export function BloodTransfusionForm({ onSubmit, onCancel, initialData }: BloodTransfusionFormProps) {
   const [formData, setFormData] = useState<Partial<BloodTransfusionReaction>>(initialData || {
-    sr: '',
     date: new Date(),
     mr: '',
     diagnosis: '',
@@ -34,16 +34,6 @@ export function BloodTransfusionForm({ onSubmit, onCancel, initialData }: BloodT
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="sr">SR#</Label>
-        <Input
-          id="sr"
-          value={formData.sr}
-          onChange={(e) => setFormData({ ...formData, sr: e.target.value })}
-          required
-        />
-      </div>
-
       <div className="space-y-2">
         <Label htmlFor="date">Date</Label>
         <Input
@@ -75,30 +65,28 @@ export function BloodTransfusionForm({ onSubmit, onCancel, initialData }: BloodT
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="bloodGroupDonor">Blood Group (Donor)</Label>
-          <Input
-            id="bloodGroupDonor"
-            value={formData.bloodGroupDonor}
-            onChange={(e) => setFormData({ ...formData, bloodGroupDonor: e.target.value })}
-            required
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="bloodGroupOnVerifyRecipient">Blood Group (Verify Recipient)</Label>
-          <Input
-            id="bloodGroupOnVerifyRecipient"
-            value={formData.bloodGroupOnVerifyRecipient}
-            onChange={(e) => setFormData({ ...formData, bloodGroupOnVerifyRecipient: e.target.value })}
-            required
-          />
-        </div>
+      <div className="space-y-2">
+        <Label htmlFor="bloodGroupDonor">Blood Group Donor</Label>
+        <Input
+          id="bloodGroupDonor"
+          value={formData.bloodGroupDonor}
+          onChange={(e) => setFormData({ ...formData, bloodGroupDonor: e.target.value })}
+          required
+        />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="bloodGroupOnVerifyDonor">Blood Group (Verify Donor)</Label>
+        <Label htmlFor="bloodGroupOnVerifyRecipient">Blood Group On Verify Recipient</Label>
+        <Input
+          id="bloodGroupOnVerifyRecipient"
+          value={formData.bloodGroupOnVerifyRecipient}
+          onChange={(e) => setFormData({ ...formData, bloodGroupOnVerifyRecipient: e.target.value })}
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="bloodGroupOnVerifyDonor">Blood Group On Verify Donor</Label>
         <Input
           id="bloodGroupOnVerifyDonor"
           value={formData.bloodGroupOnVerifyDonor}
@@ -119,7 +107,7 @@ export function BloodTransfusionForm({ onSubmit, onCancel, initialData }: BloodT
 
       <div className="space-y-2">
         <Label htmlFor="possibleReaction">Possible Reaction</Label>
-        <Textarea
+        <Input
           id="possibleReaction"
           value={formData.possibleReaction}
           onChange={(e) => setFormData({ ...formData, possibleReaction: e.target.value })}
@@ -129,10 +117,11 @@ export function BloodTransfusionForm({ onSubmit, onCancel, initialData }: BloodT
 
       <div className="space-y-2">
         <Label htmlFor="remarks">Remarks</Label>
-        <Textarea
+        <Input
           id="remarks"
           value={formData.remarks}
           onChange={(e) => setFormData({ ...formData, remarks: e.target.value })}
+          required
         />
       </div>
 

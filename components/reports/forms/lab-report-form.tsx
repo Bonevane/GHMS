@@ -12,18 +12,8 @@ interface LabReportFormProps {
   onCancel: () => void;
   initialData?: LabReport;
 }
-
 export function LabReportForm({ onSubmit, onCancel, initialData }: LabReportFormProps) {
-  const [formData, setFormData] = useState<Partial<LabReport>>(initialData || {
-    mr: '',
-    date: new Date(),
-    referredBy: '',
-    testName: '',
-    labName: '',
-    criticalResult: false,
-    informTo: ''
-  });
-
+  const [formData, setFormData] = useState<Partial<LabReport>>(initialData || {})
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(formData);
@@ -56,8 +46,8 @@ export function LabReportForm({ onSubmit, onCancel, initialData }: LabReportForm
         <Label htmlFor="referredBy">Referred By</Label>
         <Input
           id="referredBy"
-          value={formData.referredBy}
-          onChange={(e) => setFormData({ ...formData, referredBy: e.target.value })}
+          value={formData.referredby}
+          onChange={(e) => setFormData({ ...formData, referredby: e.target.value })}
           required
         />
       </div>
@@ -66,8 +56,8 @@ export function LabReportForm({ onSubmit, onCancel, initialData }: LabReportForm
         <Label htmlFor="testName">Test Name</Label>
         <Input
           id="testName"
-          value={formData.testName}
-          onChange={(e) => setFormData({ ...formData, testName: e.target.value })}
+          value={formData.testname}
+          onChange={(e) => setFormData({ ...formData, testname: e.target.value })}
           required
         />
       </div>
@@ -76,8 +66,8 @@ export function LabReportForm({ onSubmit, onCancel, initialData }: LabReportForm
         <Label htmlFor="labName">Lab Name</Label>
         <Input
           id="labName"
-          value={formData.labName}
-          onChange={(e) => setFormData({ ...formData, labName: e.target.value })}
+          value={formData.labname}
+          onChange={(e) => setFormData({ ...formData, labname: e.target.value })}
           required
         />
       </div>
@@ -85,8 +75,8 @@ export function LabReportForm({ onSubmit, onCancel, initialData }: LabReportForm
       <div className="flex items-center space-x-2">
         <Switch
           id="criticalResult"
-          checked={formData.criticalResult}
-          onCheckedChange={(checked) => setFormData({ ...formData, criticalResult: checked })}
+          checked={formData.criticalresult}
+          onCheckedChange={(checked) => setFormData({ ...formData, criticalresult: checked })}
         />
         <Label htmlFor="criticalResult">Critical Result</Label>
       </div>
@@ -95,8 +85,8 @@ export function LabReportForm({ onSubmit, onCancel, initialData }: LabReportForm
         <Label htmlFor="informTo">Inform To</Label>
         <Input
           id="informTo"
-          value={formData.informTo}
-          onChange={(e) => setFormData({ ...formData, informTo: e.target.value })}
+          value={formData.informto}
+          onChange={(e) => setFormData({ ...formData, informto: e.target.value })}
         />
       </div>
 

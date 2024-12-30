@@ -1,15 +1,15 @@
 export type Role = "Doctor" | "Nurse" | "Receptionist" | "Administrator";
 
 export interface User {
-  id: string;
+  id: number;
   name: string;
   email: string;
   role: Role;
-  department?: string; // For roles like nurse or lab technician
-  specialization?: string; // For roles like doctor or consultant
   phone?: string;
   qualification?: string;
   dateOfJoining?: Date;
+  password?: string;
+  GNUM?: string;
 }
 export interface LoginUser {
   email: string;
@@ -43,7 +43,7 @@ export interface Appointment {
 }
 
 export interface Surgery {
-  surgeryid: string;
+  id: number;
   reg: number;
   doa: Date;
   doo: Date;
@@ -59,7 +59,7 @@ export interface Surgery {
   anesthesia?: string;
   file: number;
   due: number;
-  status: 'pending' | 'approved' | 'completed';
+  status: 'pending' | 'completed';
   notes?: string;
 }
 

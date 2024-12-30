@@ -8,10 +8,11 @@ import { VerbalOrderForm } from './forms/verbal-order-form';
 import { OTRecallForm } from './forms/ot-recall-form';
 import { RedoForm } from './forms/redo-form';
 import { SterilizationForm } from './forms/sterilization-form';
-
+import { SentinelEventForm } from './forms/sentinel-event-form';
 interface RecordFormProps {
-  type: 'adverse-anesthesia' | 'blood-transfusion' | 'surgical-site' | 'verbal-order' | 'ot-recall' 
-  | 'redo' | 'sterilization';
+
+  type: 'adverseAnesthesiaEvent' | 'sterilizationRegister' | 'sentinelEvent' | 'bloodTransfusionReaction' | 'surgicalSiteInfection' | 'verbalOrder' | 'otRecall' | 'redoRegister';
+
   onSubmit: (data: any) => void;
   onCancel: () => void;
 }
@@ -19,21 +20,23 @@ interface RecordFormProps {
 export function RecordForm({ type, onSubmit, onCancel }: RecordFormProps) {
   const getFormComponent = () => {
     switch (type) {
-      case 'adverse-anesthesia':
+      case 'adverseAnesthesiaEvent':
         return <AdverseAnesthesiaForm onSubmit={onSubmit} onCancel={onCancel} />;
-      case 'blood-transfusion':
+      case 'bloodTransfusionReaction':
         return <BloodTransfusionForm onSubmit={onSubmit} onCancel={onCancel} />;
-      case 'surgical-site':
+      case 'surgicalSiteInfection':
         return <SurgicalSiteForm onSubmit={onSubmit} onCancel={onCancel} />;
-      case 'verbal-order':
+      case 'verbalOrder':
         return <VerbalOrderForm onSubmit={onSubmit} onCancel={onCancel} />;
-      case 'ot-recall':
+      case 'otRecall':
         return <OTRecallForm onSubmit={onSubmit} onCancel={onCancel} />;
-      case 'redo':
+      case 'redoRegister':
         return <RedoForm onSubmit={onSubmit} onCancel={onCancel} />;
-      case 'sterilization':
+      case 'sterilizationRegister':
         return <SterilizationForm onSubmit={onSubmit} onCancel={onCancel} />;
-      default:
+      case 'sentinelEvent':
+        return <SentinelEventForm onSubmit={onSubmit} onCancel={onCancel} />;
+        default:
         return <div>Form not found for type: {type}</div>;
     }
   };

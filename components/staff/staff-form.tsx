@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { User, Role } from '@/app/types';
-
+import supabase from '@/config/supabaseClient';
 interface StaffFormProps {
   staff?: User;
   onSubmit: (data: Partial<User>) => void;
@@ -18,16 +18,27 @@ export function StaffForm({ staff, onSubmit, onCancel }: StaffFormProps) {
   const [formData, setFormData] = useState<Partial<User>>(staff || {
     name: '',
     email: '',
-    role: 'doctor',
-    department: '',
-    specialization: '',
+    role: 'Doctor',
     phone: '',
     qualification: '',
+    password: '',
+    GNUM: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    const { data, error } = await supabase
+      .from('employee')
+      .insert(formData)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error adding staff:', error);
+      return;
+    }
+
+    onSubmit(data);
   };
 
   return (
@@ -64,34 +75,24 @@ export function StaffForm({ staff, onSubmit, onCancel }: StaffFormProps) {
             <SelectValue placeholder="Select role" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="doctor">Doctor</SelectItem>
-            <SelectItem value="nurse">Nurse</SelectItem>
-            <SelectItem value="receptionist">Receptionist</SelectItem>
-            <SelectItem value="lab_technician">Lab Technician</SelectItem>
+            <SelectItem value="Doctor">Doctor</SelectItem>
+            <SelectItem value="Nurse">Nurse</SelectItem>
+            <SelectItem value="Receptionist">Receptionist</SelectItem>
           </SelectContent>
         </Select>
       </div>
-
-      {formData.role === 'doctor' && (
-        <div className="space-y-2">
-          <Label htmlFor="specialization">Specialization</Label>
-          <Input
-            id="specialization"
-            value={formData.specialization}
-            onChange={(e) => setFormData({ ...formData, specialization: e.target.value })}
-          />
-        </div>
-      )}
-
-      <div className="space-y-2">
-        <Label htmlFor="department">Department</Label>
-        <Input
-          id="department"
-          value={formData.department}
-          onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-        />
-      </div>
-
+      {(formData.role === 'Doctor' || formData.role === 'Nurse') && (
+          <div className="space-y-2">
+            <Label htmlFor="GNUM">{formData.role === 'Doctor' ? 'PMC' : 'PNC'}</Label>
+            <Input
+              id="GNUM"
+              value={formData.GNUM}
+              onChange={(e) => setFormData({ ...formData, GNUM: e.target.value })}
+              required
+            />
+          </div>
+        )}
+      
       <div className="space-y-2">
         <Label htmlFor="phone">Phone</Label>
         <Input
@@ -100,7 +101,16 @@ export function StaffForm({ staff, onSubmit, onCancel }: StaffFormProps) {
           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
         />
       </div>
-
+      <div className="space-y-2">
+        <Label htmlFor="password">Password</Label>
+        <Input
+          id="password"
+          type="password"
+          value={formData.password}
+          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+          required
+        />
+      </div>
       <div className="space-y-2">
         <Label htmlFor="qualification">Qualification</Label>
         <Input

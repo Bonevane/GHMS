@@ -25,8 +25,8 @@ import {
 
 interface RecordListProps {
   records: any[];
-  onUpdate: (id: string, data: any) => void;
-  onDelete: (id: string) => void;
+  onUpdate: (id: number, data: any) => void;
+  onDelete: (id: number) => void;
 }
 
 export function RecordList({ records, onUpdate, onDelete }: RecordListProps) {

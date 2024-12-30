@@ -1,36 +1,55 @@
 "use client"
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StaffList } from '@/components/staff/staff-list';
 import { StaffForm } from '@/components/staff/staff-form';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Plus } from 'lucide-react';
 import { User } from '@/app/types';
-
+import supabase from '@/config/supabaseClient';
 export default function StaffPage() {
   const [staff, setStaff] = useState<User[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedStaff, setSelectedStaff] = useState(null);
 
+  useEffect(() => {
+    const fetchStaff = async () => {
+      const { data, error } = await supabase
+        .from('employee')
+        .select();
+      if (error) {
+        console.error('Error fetching staff:', error);
+      } else {
+        setStaff(data);
+      }
+    };
+
+    fetchStaff();
+  }, []);
   const handleAddStaff = (data: Partial<User>) => {
     const newStaff = {
       ...data,
-      id: Math.random().toString(36).substr(2, 9),
     } as User;
     setStaff(prev => [...prev, newStaff]);
     setIsDialogOpen(false);
   };
 
-  const handleUpdateStaff = (id: string, data: Partial<User>) => {
-    setStaff(prev =>
-      prev.map(member => member.id === id ? { ...member, ...data } : member)
-    );
-  };
 
-  const handleDeleteStaff = (id: string) => {
-    setStaff(prev => prev.filter(member => member.id !== id));
-  };
 
+  const handleDeleteStaff = async (id: number) => {
+    const { error } = await supabase
+      .from('employee')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error deleting staff:', error);
+      return;
+    }
+
+    setStaff((prev) => prev.filter((staff) => staff.id !== id));
+  };
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -61,7 +80,6 @@ export default function StaffPage() {
 
       <StaffList
         staff={staff}
-        onUpdate={handleUpdateStaff}
         onDelete={handleDeleteStaff}
       />
     </div>

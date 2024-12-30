@@ -1,41 +1,63 @@
 "use client"
 
-import { useState } from 'react';
+// filepath: /d:/DBS_project/GHMS/app/dashboard/surgeries/page.tsx
+
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { SurgeryForm } from '@/components/surgeries/surgery-form';
 import { SurgeryList } from '@/components/surgeries/surgery-list';
+import supabase from '@/config/supabaseClient';
 import { Surgery } from '@/app/types';
 
-const MOCK_SURGERIES: Surgery[] = [
-  {
-    id: '1',
-    patientId: 'P001',
-    surgeonId: 'D001',
-    type: 'Appendectomy',
-    diagnosis: 'Acute appendicitis',
-    procedure: 'Laparoscopic appendectomy',
-    dateOfAdmission: new Date('2024-03-20'),
-    dateOfOperation: new Date('2024-03-21'),
-    status: 'pending',
-  },
-];
+// Removed local Surgery interface declaration as it conflicts with the imported one
 
 export default function SurgeriesPage() {
-  const [surgeries, setSurgeries] = useState<Surgery[]>(MOCK_SURGERIES);
+  const [surgeries, setSurgeries] = useState<Surgery[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const handleAddSurgery = (surgeryData: Partial<Surgery>) => {
-    const newSurgery = {
-      ...surgeryData,
-      id: Math.random().toString(36).substr(2, 9),
-    } as Surgery;
-    setSurgeries(prev => [...prev, newSurgery]);
+  useEffect(() => {
+    const fetchSurgeries = async () => {
+      const { data, error } = await supabase
+        .from('surgery')
+        .select();
+      if (error) {
+        console.error('Error fetching surgeries:', error);
+      } else {
+        setSurgeries(data);
+      }
+    };
+
+    fetchSurgeries();
+  }, []);
+
+  const handleAddSurgery = async (surgeryData: Partial<Surgery>) => {
+    const { data, error } = await supabase
+      .from('surgery')
+      .insert(surgeryData)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error adding surgery:', error);
+      return;
+    }
+
+    setSurgeries(prev => [...prev, data]);
     setIsDialogOpen(false);
   };
 
-  const handleUpdateStatus = (id: string, status: 'pending' | 'approved' | 'completed') => {
+  const handleUpdateStatus = async (id: number, status: 'pending' | 'completed') => {
+    const { error } = await supabase
+      .from('surgery')
+      .update({ status })
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error updating surgery status:', error);
+      return;
+    }
+
     setSurgeries(prev =>
       prev.map(surgery => surgery.id === id ? { ...surgery, status } : surgery)
     );
@@ -44,22 +66,16 @@ export default function SurgeriesPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">Surgeries</h2>
-          <p className="text-muted-foreground">
-            Manage and schedule surgeries
-          </p>
-        </div>
+        <h2 className="text-3xl font-bold tracking-tight">Surgeries Management</h2>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Schedule Surgery
+              Add Surgery
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Schedule New Surgery</DialogTitle>
+              <DialogTitle>Add New Surgery</DialogTitle>
             </DialogHeader>
             <SurgeryForm
               onSubmit={handleAddSurgery}
@@ -68,11 +84,7 @@ export default function SurgeriesPage() {
           </DialogContent>
         </Dialog>
       </div>
-
-      <SurgeryList
-        surgeries={surgeries}
-        onUpdateStatus={handleUpdateStatus}
-      />
+      <SurgeryList surgeries={surgeries} onUpdateStatus={handleUpdateStatus} />
     </div>
   );
 }

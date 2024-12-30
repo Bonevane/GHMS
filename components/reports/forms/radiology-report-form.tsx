@@ -13,15 +13,7 @@ interface RadiologyReportFormProps {
 }
 
 export function RadiologyReportForm({ onSubmit, onCancel, initialData }: RadiologyReportFormProps) {
-  const [formData, setFormData] = useState<Partial<RadiologyReport>>(initialData || {
-    date: new Date(),
-    mr: '',
-    referredBy: '',
-    radiologyTestName: '',
-    labName: '',
-    timeIn: new Date(),
-    timeOut: new Date()
-  });
+  const [formData, setFormData] = useState<Partial<RadiologyReport>>(initialData || {});
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,8 +47,8 @@ export function RadiologyReportForm({ onSubmit, onCancel, initialData }: Radiolo
         <Label htmlFor="referredBy">Referred By</Label>
         <Input
           id="referredBy"
-          value={formData.referredBy}
-          onChange={(e) => setFormData({ ...formData, referredBy: e.target.value })}
+          value={formData.referredby}
+          onChange={(e) => setFormData({ ...formData, referredby: e.target.value })}
           required
         />
       </div>
@@ -65,8 +57,8 @@ export function RadiologyReportForm({ onSubmit, onCancel, initialData }: Radiolo
         <Label htmlFor="radiologyTestName">Radiology Test Name</Label>
         <Input
           id="radiologyTestName"
-          value={formData.radiologyTestName}
-          onChange={(e) => setFormData({ ...formData, radiologyTestName: e.target.value })}
+          value={formData.radiologytestname}
+          onChange={(e) => setFormData({ ...formData, radiologytestname: e.target.value })}
           required
         />
       </div>
@@ -75,8 +67,8 @@ export function RadiologyReportForm({ onSubmit, onCancel, initialData }: Radiolo
         <Label htmlFor="labName">Lab Name</Label>
         <Input
           id="labName"
-          value={formData.labName}
-          onChange={(e) => setFormData({ ...formData, labName: e.target.value })}
+          value={formData.labname}
+          onChange={(e) => setFormData({ ...formData, labname: e.target.value })}
           required
         />
       </div>
@@ -87,12 +79,12 @@ export function RadiologyReportForm({ onSubmit, onCancel, initialData }: Radiolo
           <Input
             id="timeIn"
             type="time"
-            value={formData.timeIn ? new Date(formData.timeIn).toTimeString().slice(0, 5) : ''}
+            value={formData.timein ? new Date(formData.timein.toString() ).toTimeString().slice(0, 5) : ''}
             onChange={(e) => {
               const [hours, minutes] = e.target.value.split(':');
               const date = new Date();
               date.setHours(parseInt(hours), parseInt(minutes));
-              setFormData({ ...formData, timeIn: date });
+              setFormData({ ...formData, timein: date.toISOString() });
             }}
             required
           />
@@ -103,12 +95,12 @@ export function RadiologyReportForm({ onSubmit, onCancel, initialData }: Radiolo
           <Input
             id="timeOut"
             type="time"
-            value={formData.timeOut ? new Date(formData.timeOut).toTimeString().slice(0, 5) : ''}
+            value={formData.timeout ? new Date(formData.timeout.toString()).toTimeString().slice(0, 5) : ''}
             onChange={(e) => {
               const [hours, minutes] = e.target.value.split(':');
               const date = new Date();
               date.setHours(parseInt(hours), parseInt(minutes));
-              setFormData({ ...formData, timeOut: date });
+              setFormData({ ...formData, timeout: date.toISOString() });
             }}
             required
           />

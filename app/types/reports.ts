@@ -2,20 +2,20 @@ export interface LabReport {
   id: string;
   mr: string;
   date: Date;
-  referredBy: string;
-  testName: string;
-  labName: string;
-  criticalResult: boolean;
-  informTo: string;
+  referredby: string;
+  testname: string;
+  labname: string;
+  criticalresult: boolean;
+  informto: string;
 }
 
 export interface RadiologyReport {
   id: string;
   date: Date;
   mr: string;
-  referredBy: string;
-  radiologyTestName: string;
-  labName: string;
-  timeIn: Date;
-  timeOut: Date;
+  referredby: string;
+  radiologytestname: string;
+  labname: string;
+  timein: String;
+  timeout: String;
 }

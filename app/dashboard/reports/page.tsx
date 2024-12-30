@@ -2,57 +2,31 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Plus } from 'lucide-react';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { format } from 'date-fns';
-import { LabReport, RadiologyReport } from '@/app/types/reports';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { ReportForm } from '@/components/reports/report-form';
+import { ReportList } from '@/components/reports/report-list';
+import { useReports } from '@/hooks/use_reports';
+import { format } from 'date-fns';
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
 
 type ReportType = 'lab' | 'radiology';
 
-interface Report extends Partial<LabReport>, Partial<RadiologyReport> {
-  id: string;
-  type: ReportType;
-}
-
 export default function ReportsPage() {
-  const [selectedType, setSelectedType] = useState<ReportType>('lab');
-  const [reports, setReports] = useState<Report[]>([]);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const {
+    selectedType,
+    setSelectedType,
+    reports,
+    isDialogOpen,
+    setIsDialogOpen,
+    handleAddReport,
+    handleDeleteReport,
+  } = useReports();
 
   const reportTypes = [
     { id: 'lab', label: 'Laboratory Reports' },
     { id: 'radiology', label: 'Radiology Reports' },
   ];
-
-  const handleAddReport = (data: any) => {
-    const newReport = {
-      ...data,
-      id: Math.random().toString(36).substr(2, 9),
-      type: selectedType,
-      createdAt: new Date(),
-    };
-    setReports(prev => [...prev, newReport]);
-    setIsDialogOpen(false);
-  };
-
-  const handleUpdateReport = (id: string, data: any) => {
-    setReports(prev =>
-      prev.map(report => report.id === id ? { ...report, ...data } : report)
-    );
-  };
-
-  const handleDeleteReport = (id: string) => {
-    setReports(prev => prev.filter(report => report.id !== id));
-  };
 
   const getColumns = () => {
     switch (selectedType) {
@@ -129,28 +103,28 @@ export default function ReportsPage() {
                   <>
                     <TableCell>{report.mr}</TableCell>
                     <TableCell>{format(new Date(report.date!), 'PPP')}</TableCell>
-                    <TableCell>{report.referredBy}</TableCell>
-                    <TableCell>{report.testName}</TableCell>
-                    <TableCell>{report.labName}</TableCell>
-                    <TableCell>{report.criticalResult ? 'Yes' : 'No'}</TableCell>
-                    <TableCell>{report.informTo}</TableCell>
+                    <TableCell>{report.referredby}</TableCell>
+                    <TableCell>{report.testname}</TableCell>
+                    <TableCell>{report.labname}</TableCell>
+                    <TableCell>{report.criticalresult ? 'Yes' : 'No'}</TableCell>
+                    <TableCell>{report.informto}</TableCell>
                   </>
                 ) : (
                   <>
                     <TableCell>{format(new Date(report.date!), 'PPP')}</TableCell>
                     <TableCell>{report.mr}</TableCell>
-                    <TableCell>{report.referredBy}</TableCell>
-                    <TableCell>{report.radiologyTestName}</TableCell>
-                    <TableCell>{report.labName}</TableCell>
-                    <TableCell>{format(new Date(report.timeIn!), 'HH:mm')}</TableCell>
-                    <TableCell>{format(new Date(report.timeOut!), 'HH:mm')}</TableCell>
+                    <TableCell>{report.referredby}</TableCell>
+                    <TableCell>{report.radiologytestname}</TableCell>
+                    <TableCell>{report.labname}</TableCell>
+                    <TableCell>{format(new Date(report.timein!.toString()), 'HH:mm')}</TableCell>
+                    <TableCell>{format(new Date(String(report.timeout)), 'HH:mm')}</TableCell>
                   </>
                 )}
                 <TableCell className="text-right">
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => handleDeleteReport(report.id)}
+                    onClick={() => report.id && handleDeleteReport(report.id)}
                   >
                     Delete
                   </Button>

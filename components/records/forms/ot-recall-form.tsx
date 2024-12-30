@@ -15,7 +15,6 @@ interface OTRecallFormProps {
 
 export function OTRecallForm({ onSubmit, onCancel, initialData }: OTRecallFormProps) {
   const [formData, setFormData] = useState<Partial<OTRecall>>(initialData || {
-    sr: '',
     date: new Date(),
     batch: '',
     items: '',
@@ -33,16 +32,7 @@ export function OTRecallForm({ onSubmit, onCancel, initialData }: OTRecallFormPr
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="sr">SR#</Label>
-        <Input
-          id="sr"
-          value={formData.sr}
-          onChange={(e) => setFormData({ ...formData, sr: e.target.value })}
-          required
-        />
-      </div>
-
+  
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="date">Date</Label>

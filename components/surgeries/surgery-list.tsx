@@ -15,7 +15,7 @@ import { Badge } from '@/components/ui/badge';
 
 interface SurgeryListProps {
   surgeries: Surgery[];
-  onUpdateStatus: (id: string, status: 'pending' | 'approved' | 'completed') => void;
+  onUpdateStatus: (id: number, status: 'pending' | 'completed') => void;
 }
 
 export function SurgeryList({ surgeries, onUpdateStatus }: SurgeryListProps) {
@@ -38,7 +38,6 @@ export function SurgeryList({ surgeries, onUpdateStatus }: SurgeryListProps) {
         <TableHeader>
           <TableRow>
             <TableHead>Patient ID</TableHead>
-            <TableHead>Surgery Type</TableHead>
             <TableHead>Surgeon</TableHead>
             <TableHead>Operation Date</TableHead>
             <TableHead>Status</TableHead>
@@ -48,10 +47,9 @@ export function SurgeryList({ surgeries, onUpdateStatus }: SurgeryListProps) {
         <TableBody>
           {surgeries.map((surgery) => (
             <TableRow key={surgery.id}>
-              <TableCell>{surgery.patientId}</TableCell>
-              <TableCell>{surgery.type}</TableCell>
-              <TableCell>{surgery.surgeonId}</TableCell>
-              <TableCell>{format(new Date(surgery.dateOfOperation), 'PPP')}</TableCell>
+              <TableCell>{surgery.id}</TableCell>
+              <TableCell>{surgery.surgeon}</TableCell>
+              <TableCell>{format(new Date(surgery.doo), 'PPP')}</TableCell>
               <TableCell>
                 <Badge variant="outline" className={getStatusColor(surgery.status)}>
                   {surgery.status}
@@ -59,15 +57,7 @@ export function SurgeryList({ surgeries, onUpdateStatus }: SurgeryListProps) {
               </TableCell>
               <TableCell className="text-right">
                 {surgery.status === 'pending' && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onUpdateStatus(surgery.id, 'approved')}
-                  >
-                    Approve
-                  </Button>
-                )}
-                {surgery.status === 'approved' && (
+
                   <Button
                     variant="outline"
                     size="sm"
