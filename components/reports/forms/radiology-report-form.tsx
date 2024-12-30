@@ -37,6 +37,7 @@ export function RadiologyReportForm({ onSubmit, onCancel, initialData }: Radiolo
         <Label htmlFor="mr">MR#</Label>
         <Input
           id="mr"
+          type="number"
           value={formData.mr}
           onChange={(e) => setFormData({ ...formData, mr: e.target.value })}
           required
@@ -47,6 +48,7 @@ export function RadiologyReportForm({ onSubmit, onCancel, initialData }: Radiolo
         <Label htmlFor="referredBy">Referred By</Label>
         <Input
           id="referredBy"
+          type="number"
           value={formData.referredby}
           onChange={(e) => setFormData({ ...formData, referredby: e.target.value })}
           required

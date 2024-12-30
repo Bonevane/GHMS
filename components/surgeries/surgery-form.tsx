@@ -18,7 +18,6 @@ interface SurgeryFormProps {
 
 export function SurgeryForm({ onSubmit, onCancel, initialData }: SurgeryFormProps) {
   const [formData, setFormData] = useState<Partial<Surgery>>(initialData || {
-
     doa: new Date(),
     doo: new Date(),
     dod: new Date(),
@@ -144,7 +143,7 @@ export function SurgeryForm({ onSubmit, onCancel, initialData }: SurgeryFormProp
         <Input
           id="dateOfDischarge"
           type="date"
-          value={formData.doo ? new Date(formData.doo).toISOString().split('T')[0] : ''}
+          value={formData.dod ? new Date(formData.dod).toISOString().split('T')[0] : ''}
           onChange={(e) => setFormData({ ...formData, dod: new Date(e.target.value) })}
           required
         />
@@ -192,6 +191,7 @@ export function SurgeryForm({ onSubmit, onCancel, initialData }: SurgeryFormProp
           <Label htmlFor="medicines">Medicines</Label>
           <Input
             id="medicines"
+            type="number"
             value={formData.medicines}
             onChange={(e) => setFormData({ ...formData, medicines: e.target.value })}
             required
@@ -202,6 +202,7 @@ export function SurgeryForm({ onSubmit, onCancel, initialData }: SurgeryFormProp
           <Label htmlFor="ac">AC</Label>
           <Input
             id="ac"
+            type="number"
             value={formData.ac}
             onChange={(e) => setFormData({ ...formData, ac: e.target.value })}
             required
@@ -223,14 +224,12 @@ export function SurgeryForm({ onSubmit, onCancel, initialData }: SurgeryFormProp
           <Label htmlFor="anesthesia">Anesthesia</Label>
           <Input
             id="anesthesia"
+            type="number"
             value={formData.anesthesia}
             onChange={(e) => setFormData({ ...formData, anesthesia: e.target.value })}
             required
           />
         </div>
-
-        
-
         <div className="space-y-2">
           <Label htmlFor="due">Due</Label>
           <Input

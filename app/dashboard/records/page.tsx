@@ -17,10 +17,17 @@ import {
 import { format } from 'date-fns';
 import { RecordForm } from '@/components/records/record-form';
 import { useRecords } from '@/hooks/use-records';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { filterByDate, generateMonthOptions, generateYearOptions } from '@/lib/utils/report-filters';
 
 type RecordType = 'adverseAnesthesiaEvent' | 'sterilizationRegister' | 'sentinelEvent' | 'bloodTransfusionReaction' | 'surgicalSiteInfection' | 'verbalOrder' | 'otRecall' | 'redoRegister';
 
 export default function RecordsPage() {
+  const currentDate = new Date();
+  const [selectedYear, setSelectedYear] = useState<number>(currentDate.getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState<number>(currentDate.getMonth() + 1);
+  const [selectedStatus, setSelectedStatus] = useState<string>('all');
+
   const {
     selectedType,
     setSelectedType,
@@ -65,7 +72,10 @@ export default function RecordsPage() {
     }
   };
 
-  const filteredRecords = records.filter(record => record.type === selectedType);
+  const filteredByTypeRecords = records.filter(record => record.type === selectedType);
+  const filteredRecords = filterByDate(filteredByTypeRecords, selectedYear, selectedMonth);
+  const monthOptions = generateMonthOptions();
+  const yearOptions = generateYearOptions();
 
   return (
     <div className="space-y-6">
@@ -111,6 +121,44 @@ export default function RecordsPage() {
           </DialogContent>
         </Dialog>
       </div>
+
+      <div className="flex gap-4">
+        <div className="w-[150px]">
+          <Select
+            value={selectedYear.toString()}
+            onValueChange={(value) => setSelectedYear(parseInt(value))}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select year" />
+            </SelectTrigger>
+            <SelectContent>
+              {yearOptions.map(option => (
+                <SelectItem key={option.value} value={option.value.toString()}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="w-[150px]">
+          <Select
+            value={selectedMonth.toString()}
+            onValueChange={(value) => setSelectedMonth(parseInt(value))}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select month" />
+            </SelectTrigger>
+            <SelectContent>
+              {monthOptions.map(option => (
+                <SelectItem key={option.value} value={option.value.toString()}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
 
       <div className="rounded-md border">
         <Table>
