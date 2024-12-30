@@ -65,7 +65,7 @@ export interface Surgery {
   anesthesia?: string;
   file: number;
   due: number;
-  status: 'pending' | 'completed';
+  status: 'pending' | 'completed' | 'discharged';
   notes?: string;
 }
 

@@ -25,6 +25,7 @@ export function LabReportForm({ onSubmit, onCancel, initialData }: LabReportForm
         <Label htmlFor="mr">MR#</Label>
         <Input
           id="mr"
+          type="number"
           value={formData.mr}
           onChange={(e) => setFormData({ ...formData, mr: e.target.value })}
           required
@@ -46,6 +47,7 @@ export function LabReportForm({ onSubmit, onCancel, initialData }: LabReportForm
         <Label htmlFor="referredBy">Referred By</Label>
         <Input
           id="referredBy"
+          type="number"
           value={formData.referredby}
           onChange={(e) => setFormData({ ...formData, referredby: e.target.value })}
           required
@@ -85,6 +87,7 @@ export function LabReportForm({ onSubmit, onCancel, initialData }: LabReportForm
         <Label htmlFor="informTo">Inform To</Label>
         <Input
           id="informTo"
+          type="number"
           value={formData.informto}
           onChange={(e) => setFormData({ ...formData, informto: e.target.value })}
         />

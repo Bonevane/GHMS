@@ -15,7 +15,7 @@ import { Badge } from '@/components/ui/badge';
 
 interface SurgeryListProps {
   surgeries: Surgery[];
-  onUpdateStatus: (id: number, status: 'pending' | 'completed') => void;
+  onUpdateStatus: (id: number, status: 'pending' | 'completed' | 'discharged') => void;
 }
 
 export function SurgeryList({ surgeries, onUpdateStatus }: SurgeryListProps) {
@@ -23,7 +23,7 @@ export function SurgeryList({ surgeries, onUpdateStatus }: SurgeryListProps) {
     switch (status) {
       case 'pending':
         return 'bg-yellow-100 text-yellow-800';
-      case 'approved':
+      case 'discharged':
         return 'bg-blue-100 text-blue-800';
       case 'completed':
         return 'bg-green-100 text-green-800';
@@ -66,6 +66,15 @@ export function SurgeryList({ surgeries, onUpdateStatus }: SurgeryListProps) {
                     Mark Complete
                   </Button>
                 )}
+                {surgery.status === 'completed' && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onUpdateStatus(surgery.id, 'discharged')}
+                  >
+                    Mark Discharged
+                  </Button>
+                  )}
               </TableCell>
             </TableRow>
           ))}

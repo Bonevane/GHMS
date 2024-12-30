@@ -45,6 +45,7 @@ export function AdverseAnesthesiaForm({ onSubmit, onCancel, initialData }: Adver
         <Label htmlFor="mr">MR#</Label>
         <Input
           id="mr"
+          type="number"
           value={formData.mr}
           onChange={(e) => setFormData({ ...formData, mr: e.target.value })}
           required

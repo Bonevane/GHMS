@@ -9,10 +9,18 @@ import { ReportList } from '@/components/reports/report-list';
 import { useReports } from '@/hooks/use_reports';
 import { format } from 'date-fns';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { filterByDate, generateMonthOptions, generateYearOptions } from '@/lib/utils/report-filters';
+
 
 type ReportType = 'lab' | 'radiology';
 
 export default function ReportsPage() {
+  const currentDate = new Date();
+  const [selectedYear, setSelectedYear] = useState<number>(currentDate.getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState<number>(currentDate.getMonth() + 1);
+  const [selectedStatus, setSelectedStatus] = useState<string>('all');
+
   const {
     selectedType,
     setSelectedType,
@@ -39,7 +47,10 @@ export default function ReportsPage() {
     }
   };
 
-  const filteredReports = reports.filter(report => report.type === selectedType);
+  const filteredByTypeReports = reports.filter(report => report.type === selectedType);
+  const filteredReports = filterByDate(filteredByTypeReports, selectedYear, selectedMonth);
+  const monthOptions = generateMonthOptions();
+  const yearOptions = generateYearOptions();
 
   return (
     <div className="space-y-6">
@@ -61,6 +72,44 @@ export default function ReportsPage() {
           </Button>
         ))}
       </div>
+
+      <div className="flex gap-4">
+        <div className="w-[150px]">
+          <Select
+            value={selectedYear.toString()}
+            onValueChange={(value) => setSelectedYear(parseInt(value))}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select year" />
+            </SelectTrigger>
+            <SelectContent>
+              {yearOptions.map(option => (
+                <SelectItem key={option.value} value={option.value.toString()}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="w-[150px]">
+          <Select
+            value={selectedMonth.toString()}
+            onValueChange={(value) => setSelectedMonth(parseInt(value))}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select month" />
+            </SelectTrigger>
+            <SelectContent>
+              {monthOptions.map(option => (
+                <SelectItem key={option.value} value={option.value.toString()}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
 
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-semibold">

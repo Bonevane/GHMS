@@ -46,6 +46,7 @@ export function RedoForm({ onSubmit, onCancel, initialData }: RedoFormProps) {
         <Label htmlFor="mr">MR#</Label>
         <Input
           id="mr"
+          type="number"
           value={formData.mr}
           onChange={(e) => setFormData({ ...formData, mr: e.target.value })}
           required

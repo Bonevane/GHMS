@@ -3,7 +3,7 @@
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { LabReportForm } from './forms/lab-report-form';
 import { RadiologyReportForm } from './forms/radiology-report-form';
-import { useLabtests,useRadiologytests } from '@/hooks/use-records';
+
 interface ReportFormProps {
   type: 'lab' | 'radiology';
   onSubmit: (data: any) => void;
