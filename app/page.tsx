@@ -22,11 +22,6 @@ export default function Home() {
                 Login
               </Button>
             </Link>
-            <Link href="/auth/register">
-              <Button size="lg" variant="outline">
-                Register
-              </Button>
-            </Link>
           </div>
         </div>
 

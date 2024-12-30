@@ -73,7 +73,7 @@ export interface Surgery {
 export interface Room {
   id: string;
   number: string;
-  type: 'general' | 'private' | 'icu';
+  type: 'General' | 'Operation Theatre' | 'ICU';
   status: 'available' | 'occupied';
   patientId?: string;
 }

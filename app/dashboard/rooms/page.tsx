@@ -7,10 +7,22 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
 const MOCK_ROOMS: Room[] = [
-  { id: '1', number: '101', type: 'general', status: 'available' },
-  { id: '2', number: '102', type: 'private', status: 'occupied', patientId: 'patient1' },
-  { id: '3', number: 'ICU-1', type: 'icu', status: 'available' },
-  // Add more mock rooms as needed
+  { id: '1', number: '1', type: 'General', status: 'available' },
+  { id: '2', number: '2', type: 'General', status: 'occupied', patientId: '13' },
+  { id: '3', number: '3', type: 'General', status: 'available' },
+  { id: '4', number: '4', type: 'General', status: 'occupied', patientId: '21' },
+  { id: '8', number: '8', type: 'General', status: 'occupied', patientId: '7' },
+  { id: '9', number: '9', type: 'General', status: 'available' },
+  { id: '5', number: '5', type: 'General', status: 'occupied', patientId: '2' },
+  { id: '6', number: '6', type: 'General', status: 'available' },
+  { id: '7', number: '7', type: 'General', status: 'available' },
+  { id: '10', number: '10', type: 'General', status: 'available' },
+  { id: '11', number: '11', type: 'General', status: 'occupied', patientId: '4' },
+  { id: '12', number: 'OT-01', type: 'Operation Theatre', status: 'available' },
+  { id: '13', number: 'OT-02', type: 'Operation Theatre', status: 'available' },
+  { id: '14', number: 'ER-01', type: 'ICU', status: 'occupied', patientId: '3'},
+  { id: '15', number: 'ER-02', type: 'ICU', status: 'available' },
+  { id: '16', number: 'ER-03', type: 'ICU', status: 'available' }
 ];
 
 export default function RoomsPage() {

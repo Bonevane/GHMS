@@ -27,7 +27,7 @@ export function StatCard({ title, value, icon: Icon, change, changeType }: StatC
             ? 'text-red-500'
             : 'text-muted-foreground'
         }`}>
-          {change} from last month
+          {change}
         </p>
       </CardContent>
     </Card>

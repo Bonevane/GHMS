@@ -9,20 +9,7 @@ import { UpcomingAppointments } from "@/components/appointments/upcoming-appoint
 import { useEffect, useState } from 'react';
 import supabase from '@/config/supabaseClient';
 import { Appointment } from '@/app/types';
-const MOCK_APPOINTMENTS = [
-  {
-    id: '1',
-    patientName: 'John Doe',
-    time: new Date(2024, 2, 25, 10, 30),
-    type: 'Consultation',
-  },
-  {
-    id: '2',
-    patientName: 'Jane Smith',
-    time: new Date(2024, 2, 25, 14, 15),
-    type: 'Follow-up',
-  },
-];
+
 
 export function DoctorDashboard() {
   const { user } = useAuth();
@@ -53,14 +40,12 @@ export function DoctorDashboard() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <Card>
-          <UpcomingAppointments 
-            appointments={appointments} 
-            onUpdateStatus={(id: string, status: string) => {
-              setAppointments(prev => prev.map(app => app.id === id ? { ...app, status: status as 'scheduled' | 'completed' | 'cancelled' } : app));
-            }} 
-          />  
-        </Card>
+        <UpcomingAppointments 
+          appointments={appointments} 
+          onUpdateStatus={(id: string, status: string) => {
+            setAppointments(prev => prev.map(app => app.id === id ? { ...app, status: status as 'scheduled' | 'completed' | 'cancelled' } : app));
+          }} 
+        />  
 
         <Card>
           <CardHeader>

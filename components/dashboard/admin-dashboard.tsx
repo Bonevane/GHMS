@@ -14,32 +14,32 @@ import {
 
 const stats = [
   {
-    title: 'Total Staff',
-    value: '125',
+    title: 'Available Staff',
+    value: '12',
     icon: Users,
-    change: '+4.75%',
-    changeType: 'positive' as const,
+    change: 'No leaves reported',
+    changeType: 'neutral' as const,
   },
   {
-    title: 'Total Patients',
-    value: '2,345',
+    title: 'Admitted Patients',
+    value: '34',
     icon: Calendar,
-    change: '+12.5%',
+    change: '+12.5% from last month',
     changeType: 'positive' as const,
   },
   {
-    title: 'Active Cases',
-    value: '156',
+    title: 'Active Surgeries',
+    value: '5',
     icon: Activity,
-    change: '-2.3%',
-    changeType: 'negative' as const,
+    change: 'No sentinel events reported',
+    changeType: 'positive' as const,
   },
   {
     title: 'Available Rooms',
-    value: '23',
+    value: '3',
     icon: BedDouble,
-    change: '0%',
-    changeType: 'neutral' as const,
+    change: 'Attention Required',
+    changeType: 'negative' as const,
   },
 ];
 
