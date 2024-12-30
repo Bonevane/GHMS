@@ -172,7 +172,7 @@ export function SurgeryForm({ onSubmit, onCancel, initialData }: SurgeryFormProp
       <div className="space-y-2">
         <Label htmlFor="AnesthetistId">Anesthetist</Label>
         <Select
-          value={formData.consultant?.toString()}
+          value={formData.anesthetist?.toString()}
           onValueChange={(value) => setFormData({ ...formData, anesthetist: parseInt(value) })}
         >
           <SelectTrigger>
