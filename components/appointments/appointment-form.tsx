@@ -8,14 +8,17 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Appointment } from '@/app/types';
 import { Calendar } from '@/components/ui/calendar';
+import { TimeSlotPicker } from './time-slots-picker';
+import { generateTimeSlots, TimeSlot } from '@/lib/utils/time-slots';
 
 interface AppointmentFormProps {
   appointment?: Appointment;
   onSubmit: (appointment: Partial<Appointment>) => void;
   onCancel: () => void;
+  doctors: { id: string; name: string; availability: any }[];
 }
 
-export function AppointmentForm({ appointment, onSubmit, onCancel }: AppointmentFormProps) {
+export function AppointmentForm({ appointment, onSubmit, onCancel, doctors }: AppointmentFormProps) {
   const [formData, setFormData] = useState<Partial<Appointment>>(appointment || {
     patientName: '',
     patientSex: 'Male',
@@ -24,10 +27,38 @@ export function AppointmentForm({ appointment, onSubmit, onCancel }: Appointment
     date: new Date(),
     status: 'scheduled',
   });
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedTime, setSelectedTime] = useState<string>();
+  const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
+
+  const handleDoctorChange = (doctorId: string) => {
+    const doctor = doctors.find(d => d.id === doctorId);
+    if (doctor) {
+      setFormData({ ...formData, doctorId });
+      const slots = generateTimeSlots(selectedDate, doctor.availability);
+      setTimeSlots(slots);
+    }
+  };
+
+  const handleDateChange = (date: Date | undefined) => {
+    if (date && formData.doctorId) {
+      const doctor = doctors.find(d => d.id === formData.doctorId);
+      if (doctor) {
+        setSelectedDate(date);
+        const slots = generateTimeSlots(date, doctor.availability);
+        setTimeSlots(slots);
+      }
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    if (selectedTime) {
+      const appointmentDate = new Date(selectedDate);
+      const [hours, minutes] = selectedTime.split(':');
+      appointmentDate.setHours(parseInt(hours), parseInt(minutes));
+      onSubmit({ ...formData, date: appointmentDate });
+    }
   };
 
   return (
@@ -66,50 +97,52 @@ export function AppointmentForm({ appointment, onSubmit, onCancel }: Appointment
           required
         />
       </div>
+
       <div className="space-y-2">
         <Label htmlFor="doctorId">Doctor</Label>
         <Select
           value={formData.doctorId}
-          onValueChange={(value) => setFormData({ ...formData, doctorId: value })}
+          onValueChange={handleDoctorChange}
         >
           <SelectTrigger>
             <SelectValue placeholder="Select doctor" />
           </SelectTrigger>
           <SelectContent>
-            {/* Add doctor list items here */}
+            {doctors.map(doctor => (
+              <SelectItem key={doctor.id} value={doctor.id}>
+                {doctor.name}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
+
       <div className="space-y-2">
         <Label>Date</Label>
         <Calendar
           mode="single"
-          selected={formData.date}
-          onSelect={(date) => date && setFormData({ ...formData, date })}
+          selected={selectedDate}
+          onSelect={handleDateChange}
           className="rounded-md border"
         />
       </div>
-      <div className="space-y-2">
-        <Label htmlFor="status">Status</Label>
-        <Select
-          value={formData.status}
-          onValueChange={(value) => setFormData({ ...formData, status: value as 'scheduled' | 'completed' | 'cancelled' })}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="scheduled">Scheduled</SelectItem>
-            <SelectItem value="completed">Completed</SelectItem>
-            <SelectItem value="cancelled">Cancelled</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+
+      {timeSlots.length > 0 && (
+        <div className="space-y-2">
+          <Label>Available Time Slots</Label>
+          <TimeSlotPicker
+            slots={timeSlots}
+            selectedSlot={selectedTime}
+            onSelectSlot={setSelectedTime}
+          />
+        </div>
+      )}
+
       <div className="flex justify-end space-x-2">
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
         </Button>
-        <Button type="submit">
+        <Button type="submit" disabled={!selectedTime}>
           {appointment ? 'Update' : 'Add'} Appointment
         </Button>
       </div>
@@ -117,3 +150,13 @@ export function AppointmentForm({ appointment, onSubmit, onCancel }: Appointment
     </ScrollArea>
   );
 }
+
+
+
+
+
+
+
+
+
+

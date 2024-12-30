@@ -1,54 +1,37 @@
-import { addMinutes, format, parse, isWithinInterval } from 'date-fns';
+"use client"
 
-// Time slot interval in minutes
-export const TIME_SLOT_INTERVAL = 15;
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { TimeSlot } from '@/lib/utils/time-slots';
+import { cn } from '@/lib/utils';
 
-// Generate time slots for a given day
-export function generateTimeSlots(date: Date, availability: DoctorAvailability): TimeSlot[] {
-  const slots: TimeSlot[] = [];
-  const { shifts } = availability;
-
-  shifts.forEach(shift => {
-    let currentTime = parse(shift.startTime, 'HH:mm', date);
-    const endTime = parse(shift.endTime, 'HH:mm', date);
-
-    while (currentTime < endTime) {
-      slots.push({
-        startTime: format(currentTime, 'HH:mm'),
-        endTime: format(addMinutes(currentTime, TIME_SLOT_INTERVAL), 'HH:mm'),
-        available: true
-      });
-      currentTime = addMinutes(currentTime, TIME_SLOT_INTERVAL);
-    }
-  });
-
-  return slots;
+interface TimeSlotPickerProps {
+  slots: TimeSlot[];
+  selectedSlot?: string;
+  onSelectSlot: (startTime: string) => void;
 }
 
-export function isTimeSlotAvailable(
-  slot: TimeSlot,
-  appointments: Appointment[],
-  date: Date
-): boolean {
-  const slotStart = parse(slot.startTime, 'HH:mm', date);
-  const slotEnd = parse(slot.endTime, 'HH:mm', date);
-
-  return !appointments.some(appointment => {
-    const appointmentTime = new Date(appointment.date);
-    return isWithinInterval(appointmentTime, { start: slotStart, end: slotEnd });
-  });
-}
-
-export interface TimeSlot {
-  startTime: string;
-  endTime: string;
-  available: boolean;
-}
-
-export interface DoctorAvailability {
-  doctorId: string;
-  shifts: {
-    startTime: string;
-    endTime: string;
-  }[];
+export function TimeSlotPicker({ slots, selectedSlot, onSelectSlot }: TimeSlotPickerProps) {
+  return (
+    <ScrollArea className="h-[300px] rounded-md border p-4">
+      <div className="grid grid-cols-3 gap-2">
+        {slots.map((slot) => (
+          <Button
+            key={slot.startTime}
+            variant="outline"
+            className={cn(
+              "w-full",
+              selectedSlot === slot.startTime && "border-primary bg-primary/10",
+              !slot.available && "opacity-50 cursor-not-allowed"
+            )}
+            disabled={!slot.available}
+            onClick={() => onSelectSlot(slot.startTime)}
+          >
+            {slot.startTime}
+          </Button>
+        ))}
+      </div>
+    </ScrollArea>
+  );
 }

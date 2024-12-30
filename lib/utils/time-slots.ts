@@ -1,4 +1,5 @@
-    import { addMinutes, format, parse, isWithinInterval } from 'date-fns';
+    import { Appointment } from '@/app/types/index';
+import { addMinutes, format, parse, isWithinInterval } from 'date-fns';
 
     // Time slot interval in minutes
     export const TIME_SLOT_INTERVAL = 15;

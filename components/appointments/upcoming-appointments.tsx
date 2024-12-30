@@ -25,7 +25,10 @@ export function UpcomingAppointments({ appointments, onUpdateStatus }: UpcomingA
             <div>
               <p className="font-medium">Patient Name: {appointment.patientName}</p>
               <p className="text-sm text-muted-foreground">
-                {format(appointment.date, 'PPp')}
+                {format(new Date(appointment.date), 'MMM d, yyyy')}
+              </p>
+              <p className="text-sm font-medium text-primary">
+                {format(new Date(appointment.date), 'h:mm a')}
               </p>
             </div>
             <Badge>{appointment.status}</Badge>
