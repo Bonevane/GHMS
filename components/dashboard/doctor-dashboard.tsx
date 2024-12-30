@@ -5,7 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, CheckCircle } from 'lucide-react';
 import { format } from 'date-fns';
-
+import { UpcomingAppointments } from "@/components/appointments/upcoming-appointments";
+import { useEffect, useState } from 'react';
+import supabase from '@/config/supabaseClient';
+import { Appointment } from '@/app/types';
 const MOCK_APPOINTMENTS = [
   {
     id: '1',
@@ -23,7 +26,23 @@ const MOCK_APPOINTMENTS = [
 
 export function DoctorDashboard() {
   const { user } = useAuth();
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
 
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      const { data, error } = await supabase
+        .from('appointment')
+        .select();
+  
+      if (error) {
+        console.error('Error fetching appointments:', error);
+      } else {
+        setAppointments(data);
+      }
+    };
+  
+    fetchAppointments();
+  }, []);
   return (
     <div className="space-y-6">
       <div>
@@ -35,33 +54,12 @@ export function DoctorDashboard() {
 
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Calendar className="mr-2 h-5 w-5" />
-              Upcoming Appointments
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {MOCK_APPOINTMENTS.map((appointment) => (
-                <div
-                  key={appointment.id}
-                  className="flex items-center justify-between p-4 border rounded-lg"
-                >
-                  <div>
-                    <p className="font-medium">{appointment.patientName}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {format(appointment.time, 'h:mm a')} - {appointment.type}
-                    </p>
-                  </div>
-                  <Button size="sm">
-                    <CheckCircle className="mr-2 h-4 w-4" />
-                    Complete
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </CardContent>
+          <UpcomingAppointments 
+            appointments={appointments} 
+            onUpdateStatus={(id: string, status: string) => {
+              setAppointments(prev => prev.map(app => app.id === id ? { ...app, status: status as 'scheduled' | 'completed' | 'cancelled' } : app));
+            }} 
+          />  
         </Card>
 
         <Card>

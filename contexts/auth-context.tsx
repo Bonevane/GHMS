@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const { data, error } = await supabase
         .from("employee")
-        .select("name, email, password, role")
+        .select("id,name, email, password, role")
         .match({ email, password, role });
 
       if (error || !data || data.length === 0) {

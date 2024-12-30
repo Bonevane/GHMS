@@ -14,6 +14,7 @@ export interface User {
   GNUM?: string;
 }
 export interface LoginUser {
+  id: number;
   email: string;
   password: string;
   role: Role;
