@@ -34,7 +34,9 @@ export interface Patient {
 
 export interface Appointment {
   id: string;
-  patientId: string;
+  patientName: string;
+  patientPhone: string;
+  patientSex: string;
   doctorId: string;
   date: Date;
   status: 'scheduled' | 'completed' | 'cancelled';

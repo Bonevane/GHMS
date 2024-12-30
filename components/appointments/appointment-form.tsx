@@ -17,7 +17,9 @@ interface AppointmentFormProps {
 
 export function AppointmentForm({ appointment, onSubmit, onCancel }: AppointmentFormProps) {
   const [formData, setFormData] = useState<Partial<Appointment>>(appointment || {
-    patientId: '',
+    patientName: '',
+    patientSex: 'Male',
+    patientPhone: '',
     doctorId: '',
     date: new Date(),
     status: 'scheduled',
@@ -32,18 +34,37 @@ export function AppointmentForm({ appointment, onSubmit, onCancel }: Appointment
     <ScrollArea className="h-[500px] pr-4">
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="patientId">Patient</Label>
+        <Label htmlFor="name">Patient Name</Label>
+        <Input
+          id="name"
+          value={formData.patientName}
+          onChange={(e) => setFormData({ ...formData, patientName: e.target.value })}
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="gender">Gender</Label>
         <Select
-          value={formData.patientId}
-          onValueChange={(value) => setFormData({ ...formData, patientId: value })}
+          value={formData.patientSex}
+          onValueChange={(value) => setFormData({ ...formData, patientSex: value as 'Male' | 'Female'  })}
         >
           <SelectTrigger>
-            <SelectValue placeholder="Select patient" />
+            <SelectValue placeholder="Select gender" />
           </SelectTrigger>
           <SelectContent>
-            {/* Add patient list items here */}
+            <SelectItem value="Male">Male</SelectItem>
+            <SelectItem value="Female">Female</SelectItem>
           </SelectContent>
         </Select>
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="contact">Contact</Label>
+        <Input
+          id="contact"
+          value={formData.patientPhone}
+          onChange={(e) => setFormData({ ...formData, patientPhone: e.target.value })}
+          required
+        />
       </div>
       <div className="space-y-2">
         <Label htmlFor="doctorId">Doctor</Label>

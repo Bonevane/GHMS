@@ -26,7 +26,7 @@ export function AppointmentList({ appointments, onUpdateStatus }: AppointmentLis
         >
           <div className="flex justify-between items-start">
             <div>
-              <p className="font-medium">Patient ID: {appointment.patientId}</p>
+              <p className="font-medium">Patient Name: {appointment.patientName}</p>
               <p className="text-sm text-muted-foreground">
                 Doctor ID: {appointment.doctorId}
               </p>

@@ -18,7 +18,9 @@ import { useAuth } from '@/contexts/auth-context';
 const MOCK_APPOINTMENTS: Appointment[] = [
   {
     id: '1',
-    patientId: '1',
+    patientName: 'Nigger',
+    patientSex: 'Male',
+    patientPhone: '02304204',
     doctorId: '1',
     date: new Date(),
     status: 'scheduled',
