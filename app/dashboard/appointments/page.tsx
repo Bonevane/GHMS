@@ -42,6 +42,15 @@ const MOCK_APPOINTMENTS: Appointment[] = [
     patientName: 'Nigger',
     patientSex: 'Male',
     patientPhone: '02304204',
+    docid: '1',
+    date: new Date(),
+    status: 'scheduled',
+  },
+  {
+    id: '2',
+    patientName: 'dumbass',
+    patientSex: 'Male',
+    patientPhone: '02304204',
     doctorId: '1',
     date: new Date(),
     status: 'scheduled',
@@ -71,7 +80,7 @@ export default function AppointmentsPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
-  const handleAddAppointment = (appointmentData: Partial<Appointment>) => {
+  const handleAddAppointment = async(appointmentData: Partial<Appointment>) => {
     const newAppointment = {
       ...appointmentData,
       id: Math.random().toString(36).substr(2, 9),
@@ -81,11 +90,25 @@ export default function AppointmentsPage() {
     setAppointments(prev => [...prev, newAppointment]);
     setIsDialogOpen(false);
   };
+   
+  const handleUpdateStatus = async (id: string, status: 'scheduled' | 'completed' | 'cancelled') => {
+    if (status === 'completed' || status === 'cancelled') {
+      const { error } = await supabase
+        .from('appointment')
+        .delete()
+        .eq('id', id);
 
-  const handleUpdateStatus = (id: string, status: 'scheduled' | 'completed' | 'cancelled') => {
-    setAppointments(prev =>
-      prev.map(apt => apt.id === id ? { ...apt, status } : apt)
-    );
+      if (error) {
+        console.error('Error deleting appointment:', error);
+        return;
+      }
+
+      setAppointments(prev => prev.filter(apt => apt.id !== id));
+    } else {
+      setAppointments(prev =>
+        prev.map(apt => apt.id === id ? { ...apt, status } : apt)
+      );
+    }
   };
 
   const filteredAppointments = appointments.filter(apt => 

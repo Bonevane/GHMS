@@ -23,6 +23,8 @@ export function StaffForm({ staff, onSubmit, onCancel }: StaffFormProps) {
     qualification: '',
     password: '',
     GNUM: '',
+    startTime: '',
+    endTime: '',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -97,8 +99,27 @@ export function StaffForm({ staff, onSubmit, onCancel }: StaffFormProps) {
         <Label htmlFor="phone">Phone</Label>
         <Input
           id="phone"
+          type='phone'
           value={formData.phone}
           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="startTime">Start Time</Label>
+        <Input
+          id="startTime"
+          type="time"
+          value={formData.startTime}
+          onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="endTime">End Time</Label>
+        <Input
+          id="endTime"
+          type="time"
+          value={formData.endTime}
+          onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
         />
       </div>
       <div className="space-y-2">

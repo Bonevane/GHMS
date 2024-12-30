@@ -23,7 +23,7 @@ export function AppointmentForm({ appointment, onSubmit, onCancel, doctors }: Ap
     patientName: '',
     patientSex: 'Male',
     patientPhone: '',
-    doctorId: '',
+    docid: '',
     date: new Date(),
     status: 'scheduled',
   });
@@ -101,6 +101,8 @@ export function AppointmentForm({ appointment, onSubmit, onCancel, doctors }: Ap
       <div className="space-y-2">
         <Label htmlFor="doctorId">Doctor</Label>
         <Select
+          value={formData.docid}
+          onValueChange={(value) => setFormData({ ...formData, docid: value })}
           value={formData.doctorId}
           onValueChange={handleDoctorChange}
         >

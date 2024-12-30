@@ -47,7 +47,7 @@ export function SurgeryList({ surgeries, onUpdateStatus }: SurgeryListProps) {
         <TableBody>
           {surgeries.map((surgery) => (
             <TableRow key={surgery.id}>
-              <TableCell>{surgery.id}</TableCell>
+              <TableCell>{surgery.reg}</TableCell>
               <TableCell>{surgery.surgeon}</TableCell>
               <TableCell>{format(new Date(surgery.doo), 'PPP')}</TableCell>
               <TableCell>
