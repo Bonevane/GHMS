@@ -7,8 +7,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Surgery } from '@/app/types';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import supabase from '@/config/supabaseClient';
-import { Patient } from '@/app/types';
+import { User } from '@/app/types';
 interface SurgeryFormProps {
   onSubmit: (data: Partial<Surgery>) => void;
   onCancel: () => void;
@@ -23,8 +24,6 @@ export function SurgeryForm({ onSubmit, onCancel, initialData }: SurgeryFormProp
     dod: new Date(),
     diagnosis: '',
     procedure: '',
-    consultant: '',
-    anesthetist: '',
     medicines: '',
     ac: '',
     bill: 0,
@@ -33,7 +32,7 @@ export function SurgeryForm({ onSubmit, onCancel, initialData }: SurgeryFormProp
     due: 0,
     status: 'pending',
   });
-  const [patients, setPatients] = useState<Patient[]>([]);
+  const [doctors, setDoctors] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -41,14 +40,15 @@ export function SurgeryForm({ onSubmit, onCancel, initialData }: SurgeryFormProp
     const fetchPatients = async () => {
       try{
       const { data, error } = await supabase
-        .from('test2') 
-        .select(); 
+        .from('employee') 
+        .select()
+        .eq('role', 'Doctor'); 
         if (error) {
           setError(error.message);
           console.error('Error fetching data:', error);
         } else {
           console.log(data)
-          setPatients(data as Patient[]); // Set 
+          setDoctors(data as User[]); // Set 
           // data correctly
         }
         }
@@ -80,15 +80,23 @@ export function SurgeryForm({ onSubmit, onCancel, initialData }: SurgeryFormProp
       />
     </div>
     <div className="space-y-2">
-      <Label htmlFor="surgeonId">Surgeon ID</Label>
-      <Input
-        id="surgeonId"
-        type="number"
-        value={formData.surgeon}
-        onChange={(e) => setFormData({ ...formData, surgeon: parseInt(e.target.value) || 0 })}
-        required
-      />
-    </div>
+        <Label htmlFor="doctorId">Doctor</Label>
+        <Select
+          value={formData.surgeon?.toString()}
+          onValueChange={(value) => setFormData({ ...formData, surgeon: parseInt(value) })}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select doctor" />
+          </SelectTrigger>
+          <SelectContent>
+          {doctors.map((doctor) => (
+            <SelectItem key={doctor.id} value={doctor.id.toString()}>
+              {doctor.name}
+            </SelectItem>
+          ))}
+          </SelectContent>
+        </Select>
+      </div>
     <div className="space-y-2">
       
     </div>
@@ -144,24 +152,41 @@ export function SurgeryForm({ onSubmit, onCancel, initialData }: SurgeryFormProp
       
     </div>
     <div className="space-y-2">
-          <Label htmlFor="consultant">Consultant</Label>
-          <Input
-            id="consultant"
-            value={formData.consultant}
-            onChange={(e) => setFormData({ ...formData, consultant: e.target.value })}
-            required
-          />
-        </div>
-        
-        <div className="space-y-2">
-          <Label htmlFor="anesthetist">Anesthetist</Label>
-          <Input
-            id="anesthetist"
-            value={formData.anesthetist}
-            onChange={(e) => setFormData({ ...formData, anesthetist: e.target.value })}
-            required
-          />
-        </div>
+        <Label htmlFor="consultantId">Consultant</Label>
+        <Select
+          value={formData.consultant?.toString()}
+          onValueChange={(value) => setFormData({ ...formData, consultant: parseInt(value) })}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select consultant" />
+          </SelectTrigger>
+          <SelectContent>
+          {doctors.map((doctor) => (
+            <SelectItem key={doctor.id} value={doctor.id.toString()}>
+              {doctor.name}
+            </SelectItem>
+          ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="AnesthetistId">Anesthetist</Label>
+        <Select
+          value={formData.consultant?.toString()}
+          onValueChange={(value) => setFormData({ ...formData, anesthetist: parseInt(value) })}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select Anesthetist" />
+          </SelectTrigger>
+          <SelectContent>
+          {doctors.map((doctor) => (
+            <SelectItem key={doctor.id} value={doctor.id.toString()}>
+              {doctor.name}
+            </SelectItem>
+          ))}
+          </SelectContent>
+        </Select>
+      </div>
 
         <div className="space-y-2">
           <Label htmlFor="medicines">Medicines</Label>

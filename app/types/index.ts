@@ -51,8 +51,8 @@ export interface Surgery {
   diagnosis: string;
   procedure: string;
   surgeon: number;
-  consultant?: string;
-  anesthetist?: string;
+  consultant?: number;
+  anesthetist?: number;
   medicines?: string;
   ac?:string;
   bill?: number;
