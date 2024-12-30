@@ -5,6 +5,8 @@ export interface User {
   name: string;
   email: string;
   role: Role;
+  startTime?: string;
+  endTime?: string;
   phone?: string;
   qualification?: string;
   dateOfJoining?: Date;
@@ -37,10 +39,11 @@ export interface Appointment {
   patientName: string;
   patientPhone: string;
   patientSex: string;
-  doctorId: string;
+  docid: string;
   date: Date;
   status: 'scheduled' | 'completed' | 'cancelled';
   notes?: string;
+
   referredBy?: string; // Referring doctor or consultant
 }
 

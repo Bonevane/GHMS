@@ -12,8 +12,7 @@ import { Appointment } from '@/app/types';
 import { format } from 'date-fns';
 import { useRouter } from "next/navigation";
 import { useAuth } from '@/contexts/auth-context';
-
-
+import supabase from '@/config/supabaseClient';
 // Mock appointments data
 const MOCK_APPOINTMENTS: Appointment[] = [
   {
@@ -21,7 +20,7 @@ const MOCK_APPOINTMENTS: Appointment[] = [
     patientName: 'Nigger',
     patientSex: 'Male',
     patientPhone: '02304204',
-    doctorId: '1',
+    docid: '1',
     date: new Date(),
     status: 'scheduled',
     notes: 'Regular checkup'
@@ -33,21 +32,45 @@ export default function AppointmentsPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
 
-  const handleAddAppointment = (appointmentData: Partial<Appointment>) => {
+  const handleAddAppointment = async(appointmentData: Partial<Appointment>) => {
     const newAppointment = {
       ...appointmentData,
-      id: Math.random().toString(36).substr(2, 9),
     } as Appointment;
+    const { data, error } = await supabase
+      .from('appointment')
+      .insert(newAppointment)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error adding surgery:', error);
+      return;
+    }
+    setIsDialogOpen(false);
     setAppointments(prev => [...prev, newAppointment]);
     setIsDialogOpen(false);
   };
+   
+  const handleUpdateStatus = async (id: string, status: 'scheduled' | 'completed' | 'cancelled') => {
+    if (status === 'completed' || status === 'cancelled') {
+      const { error } = await supabase
+        .from('appointment')
+        .delete()
+        .eq('id', id);
 
-  const handleUpdateStatus = (id: string, status: 'scheduled' | 'completed' | 'cancelled') => {
-    setAppointments(prev =>
-      prev.map(apt => apt.id === id ? { ...apt, status } : apt)
-    );
+      if (error) {
+        console.error('Error deleting appointment:', error);
+        return;
+      }
+
+      setAppointments(prev => prev.filter(apt => apt.id !== id));
+    } else {
+      setAppointments(prev =>
+        prev.map(apt => apt.id === id ? { ...apt, status } : apt)
+      );
+    }
   };
-
+  
   const filteredAppointments = selectedDate
     ? appointments.filter(apt => 
         format(apt.date, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd'))

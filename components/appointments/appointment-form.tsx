@@ -20,7 +20,7 @@ export function AppointmentForm({ appointment, onSubmit, onCancel }: Appointment
     patientName: '',
     patientSex: 'Male',
     patientPhone: '',
-    doctorId: '',
+    docid: '',
     date: new Date(),
     status: 'scheduled',
   });
@@ -69,8 +69,8 @@ export function AppointmentForm({ appointment, onSubmit, onCancel }: Appointment
       <div className="space-y-2">
         <Label htmlFor="doctorId">Doctor</Label>
         <Select
-          value={formData.doctorId}
-          onValueChange={(value) => setFormData({ ...formData, doctorId: value })}
+          value={formData.docid}
+          onValueChange={(value) => setFormData({ ...formData, docid: value })}
         >
           <SelectTrigger>
             <SelectValue placeholder="Select doctor" />
