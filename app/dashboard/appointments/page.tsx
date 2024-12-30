@@ -9,6 +9,7 @@ import { AppointmentForm } from '@/components/appointments/appointment-form';
 import { AppointmentList } from '@/components/appointments/appointment-list';
 import { UpcomingAppointments } from '@/components/appointments/upcoming-appointments';
 import { Appointment } from '@/app/types';
+import supabase from '@/config/supabaseClient';
 
 // Mock doctors data
 const MOCK_DOCTORS = [
@@ -51,16 +52,7 @@ const MOCK_APPOINTMENTS: Appointment[] = [
     patientName: 'dumbass',
     patientSex: 'Male',
     patientPhone: '02304204',
-    doctorId: '1',
-    date: new Date(),
-    status: 'scheduled',
-  },
-  {
-    id: '2',
-    patientName: 'dumbass',
-    patientSex: 'Male',
-    patientPhone: '02304204',
-    doctorId: '1',
+    docid: '1',
     date: new Date(),
     status: 'completed',
   },
@@ -69,7 +61,7 @@ const MOCK_APPOINTMENTS: Appointment[] = [
     patientName: 'ong',
     patientSex: 'Male',
     patientPhone: '52323552',
-    doctorId: '2',
+    docid: '2',
     date: new Date(),
     status: 'scheduled',
   }

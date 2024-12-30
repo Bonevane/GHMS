@@ -46,7 +46,7 @@ export function AppointmentList({ appointments, onUpdateStatus }: AppointmentLis
                     <div>
                       <p className="font-medium">Patient Name: {appointment.patientName}</p>
                       <p className="text-sm text-muted-foreground">
-                        Doctor ID: {appointment.doctorId}
+                        Doctor ID: {appointment.docid}
                       </p>
                       {appointment.notes && (
                         <p className="text-sm text-muted-foreground mt-2">

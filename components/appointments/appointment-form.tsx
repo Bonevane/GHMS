@@ -31,18 +31,18 @@ export function AppointmentForm({ appointment, onSubmit, onCancel, doctors }: Ap
   const [selectedTime, setSelectedTime] = useState<string>();
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
 
-  const handleDoctorChange = (doctorId: string) => {
-    const doctor = doctors.find(d => d.id === doctorId);
+  const handleDoctorChange = (docid: string) => {
+    const doctor = doctors.find(d => d.id === docid);
     if (doctor) {
-      setFormData({ ...formData, doctorId });
+      setFormData({ ...formData, docid });
       const slots = generateTimeSlots(selectedDate, doctor.availability);
       setTimeSlots(slots);
     }
   };
 
   const handleDateChange = (date: Date | undefined) => {
-    if (date && formData.doctorId) {
-      const doctor = doctors.find(d => d.id === formData.doctorId);
+    if (date && formData.docid) {
+      const doctor = doctors.find(d => d.id === formData.docid);
       if (doctor) {
         setSelectedDate(date);
         const slots = generateTimeSlots(date, doctor.availability);
@@ -102,8 +102,6 @@ export function AppointmentForm({ appointment, onSubmit, onCancel, doctors }: Ap
         <Label htmlFor="doctorId">Doctor</Label>
         <Select
           value={formData.docid}
-          onValueChange={(value) => setFormData({ ...formData, docid: value })}
-          value={formData.doctorId}
           onValueChange={handleDoctorChange}
         >
           <SelectTrigger>
