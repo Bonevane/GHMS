@@ -10,75 +10,66 @@ import { AppointmentList } from '@/components/appointments/appointment-list';
 import { UpcomingAppointments } from '@/components/appointments/upcoming-appointments';
 import { Appointment } from '@/app/types';
 import supabase from '@/config/supabaseClient';
+import { User } from '@/app/types';
+interface AppointmentFormProps {
+  appointment?: Appointment;
+  onSubmit: (appointment: Partial<Appointment>) => void;
+  onCancel: () => void;
+  doctors: { id: string; name: string; availability: any }[];
+}
 
-// Mock doctors data
-const MOCK_DOCTORS = [
-  {
-    id: '1',
-    name: 'Dr. Smith',
-    availability: {
-      doctorId: '1',
-      shifts: [
-        { startTime: '09:00', endTime: '13:00' },
-        { startTime: '14:00', endTime: '17:00' }
-      ]
-    }
-  },
-  {
-    id: '2',
-    name: 'Dr. Johnson',
-    availability: {
-      doctorId: '2',
-      shifts: [
-        { startTime: '10:00', endTime: '14:00' },
-        { startTime: '15:00', endTime: '18:00' }
-      ]
-    }
-  }
-];
 
-const MOCK_APPOINTMENTS: Appointment[] = [
-  {
-    id: '1',
-    patientName: 'Nigger',
-    patientSex: 'Male',
-    patientPhone: '02304204',
-    docid: '1',
-    date: new Date(),
-    status: 'scheduled',
-  },
-  {
-    id: '2',
-    patientName: 'dumbass',
-    patientSex: 'Male',
-    patientPhone: '02304204',
-    docid: '1',
-    date: new Date(),
-    status: 'completed',
-  },
-  { 
-    id: '3',
-    patientName: 'ong',
-    patientSex: 'Male',
-    patientPhone: '52323552',
-    docid: '2',
-    date: new Date(),
-    status: 'scheduled',
-  }
-];
 
 export default function AppointmentsPage() {
-  const [appointments, setAppointments] = useState<Appointment[]>(MOCK_APPOINTMENTS);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [fetchDoctors, setDoctors] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('employee')
+          .select()
+          .eq('role', 'Doctor');
+        if (error) {
+          setError(error.message);
+          console.error('Error fetching doctors:', error);
+        } else {
+         
+          
+          setDoctors(data );
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDoctors();
+  }, []);
+  useEffect(() => {
+      const fetchAppointments = async () => {
+        const { data, error } = await supabase
+          .from('appointment')
+          .select();
+    
+        if (error) {
+          console.error('Error fetching appointments:', error);
+        } else {
+          setAppointments(data);
+        }
+      };
+    
+      fetchAppointments();
+    }, []);
   const handleAddAppointment = async(appointmentData: Partial<Appointment>) => {
     const newAppointment = {
       ...appointmentData,
-      id: Math.random().toString(36).substr(2, 9),
       status: 'scheduled',
     } as Appointment;
-    
     setAppointments(prev => [...prev, newAppointment]);
     setIsDialogOpen(false);
   };
@@ -132,9 +123,9 @@ export default function AppointmentsPage() {
               <DialogTitle>Schedule New Appointment</DialogTitle>
             </DialogHeader>
             <AppointmentForm
+              doctors={fetchDoctors.map(doc => ({ ...doc, availability: [doc.startTime, doc.endTime] }))}
               onSubmit={handleAddAppointment}
               onCancel={() => setIsDialogOpen(false)}
-              doctors={MOCK_DOCTORS}
             />
           </DialogContent>
         </Dialog>

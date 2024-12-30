@@ -35,13 +35,14 @@ export interface Patient {
 }
 
 export interface Appointment {
-  id: string;
-  patientName: string;
-  patientPhone: string;
-  patientSex: string;
-  docid: string;
-  date: Date;
-  status: 'scheduled' | 'completed' | 'cancelled';
+  id: string,
+  patientName: string,
+  patientSex: string,
+  patientPhone: string,
+  docid:string,
+  date: Date,
+  startTime: string,
+  status: 'scheduled' | 'completed' | 'cancelled',
   notes?: string;
 
   referredBy?: string; // Referring doctor or consultant

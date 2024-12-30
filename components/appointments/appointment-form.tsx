@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from 'react';
+import { useState ,useEffect} from 'react';
+import { User } from '@/app/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,54 +11,72 @@ import { Appointment } from '@/app/types';
 import { Calendar } from '@/components/ui/calendar';
 import { TimeSlotPicker } from './time-slots-picker';
 import { generateTimeSlots, TimeSlot } from '@/lib/utils/time-slots';
+import supabase from '@/config/supabaseClient';
+import { time } from 'console';
 
-interface AppointmentFormProps {
-  appointment?: Appointment;
-  onSubmit: (appointment: Partial<Appointment>) => void;
+type AppointmentFormProps = {
+  appointment?: Partial<Appointment>;
+  onSubmit: (appointment: Appointment) => void;
   onCancel: () => void;
-  doctors: { id: string; name: string; availability: any }[];
-}
+  doctors: User[];
+};
 
 export function AppointmentForm({ appointment, onSubmit, onCancel, doctors }: AppointmentFormProps) {
   const [formData, setFormData] = useState<Partial<Appointment>>(appointment || {
     patientName: '',
     patientSex: 'Male',
     patientPhone: '',
-    docid: '',
     date: new Date(),
     status: 'scheduled',
+    startTime: '',
   });
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedTime, setSelectedTime] = useState<string>();
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
 
   const handleDoctorChange = (docid: string) => {
-    const doctor = doctors.find(d => d.id === docid);
+    const doctor = doctors.find(d => d.id === Number(docid));
     if (doctor) {
       setFormData({ ...formData, docid });
-      const slots = generateTimeSlots(selectedDate, doctor.availability);
-      setTimeSlots(slots);
+      if (doctor.startTime && doctor.endTime) {
+        const slots = generateTimeSlots(selectedDate, doctor.startTime, doctor.endTime);
+        if (doctor.startTime && doctor.endTime) {
+          const slots = generateTimeSlots(selectedDate, doctor.startTime, doctor.endTime);
+          setTimeSlots(slots);
+        }
+      }
     }
   };
 
   const handleDateChange = (date: Date | undefined) => {
     if (date && formData.docid) {
-      const doctor = doctors.find(d => d.id === formData.docid);
+      const doctor = doctors.find(d => d.id === Number(formData.docid));
       if (doctor) {
         setSelectedDate(date);
-        const slots = generateTimeSlots(date, doctor.availability);
-        setTimeSlots(slots);
+        if (doctor.startTime && doctor.endTime) {
+          const slots = generateTimeSlots(date, doctor.startTime, doctor.endTime);
+          setTimeSlots(slots);
+        }
       }
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedTime) {
       const appointmentDate = new Date(selectedDate);
-      const [hours, minutes] = selectedTime.split(':');
-      appointmentDate.setHours(parseInt(hours), parseInt(minutes));
-      onSubmit({ ...formData, date: appointmentDate });
+      const newAppointment = { ...formData ,startTime:selectedTime};
+      const { data, error } = await supabase
+        .from('appointment')
+        .insert(newAppointment)
+        .select()
+        .single();
+  
+      if (error) {
+        console.error('Error adding appointment:', error);
+        return;
+      }
+      onSubmit(data);
     }
   };
 
@@ -109,7 +128,7 @@ export function AppointmentForm({ appointment, onSubmit, onCancel, doctors }: Ap
           </SelectTrigger>
           <SelectContent>
             {doctors.map(doctor => (
-              <SelectItem key={doctor.id} value={doctor.id}>
+              <SelectItem key={doctor.id} value={doctor.id.toString()}>
                 {doctor.name}
               </SelectItem>
             ))}
@@ -150,13 +169,5 @@ export function AppointmentForm({ appointment, onSubmit, onCancel, doctors }: Ap
     </ScrollArea>
   );
 }
-
-
-
-
-
-
-
-
 
 
